@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { collection } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
-import { addDocumentNonBlocking } from '@/firebase';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Send } from 'lucide-react';
 
 const formSchema = z.object({
@@ -44,6 +44,7 @@ export function Contact() {
 
     try {
       const messagesCollection = collection(firestore, 'messages');
+      // Usar la función no bloqueante para mayor robustez
       await addDocumentNonBlocking(messagesCollection, {
         ...data,
         createdAt: new Date(),
