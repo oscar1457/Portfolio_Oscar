@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "avatar",
+      "description": "A portrait of the developer.",
+      "imageUrl": "https://i.imgur.com/5s27uj8.jpeg",
+      "imageHint": "portrait person"
+    },
+    {
+      "id": "project1",
+      "description": "Screenshot of Project 1.",
+      "imageUrl": "https://images.unsplash.com/photo-1550063873-ab792950096b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb3VyY2UlMjBjb2RlJTIwaW50ZXJmYWNlfGVufDB8fHx8MTc2MjQwODQxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "source code"
+    },
+    {
+      "id": "project2",
+      "description": "The stage at a CS50 lecture.",
+      "imageUrl": "https://i.imgur.com/XsyguBh.jpeg",
+      "imageHint": "lecture stage"
+    },
+    {
+      "id": "project3",
+      "description": "Screenshot of Project 3.",
+      "imageUrl": "https://images.unsplash.com/photo-1757310998437-b2e8a7bd2e97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkZXNpZ24lMjBpbnRlcmZhY2V8ZW58MHx8fHwxNzYyMjc5ODU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "design interface"
+    },
+    {
+      "id": "project4",
+      "description": "Screenshot of Project 4.",
+      "imageUrl": "https://images.unsplash.com/photo-1654618977232-a6c6dea9d1e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3ZWIlMjBkZXZlbG9wbWVudHxlbnwwfHx8fDE3NjIzMDcxNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "web development"
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "entities": {
+    "Project": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Project",
+      "type": "object",
+      "description": "Represents a project showcased in the portfolio.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the project."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the project."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the project."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the project's image.",
+          "format": "uri"
+        },
+        "projectUrl": {
+          "type": "string",
+          "description": "URL to the live project or its repository.",
+          "format": "uri"
+        },
+        "technologies": {
+          "type": "array",
+          "description": "List of technologies used in the project.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "imageUrl",
+        "projectUrl",
+        "technologies"
+      ]
+    },
+    "Skill": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Skill",
+      "type": "object",
+      "description": "Represents a skill of the developer.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the skill."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the skill."
+        },
+        "level": {
+          "type": "number",
+          "description": "The proficiency level in the skill (e.g., 0-100).",
+          "format": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "level"
+      ]
+    },
+    "Message": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Message",
+      "type": "object",
+      "description": "Represents a message sent through the contact form.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The sender's name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The sender's email address.",
+          "format": "email"
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the message was sent."
+        }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/projects/{projectId}",
+        "definition": {
+          "entityName": "Project",
+          "schema": {
+            "$ref": "#/backend/entities/Project"
+          },
+          "description": "Stores projects owned by a specific user. Path-based ownership ensures only the authenticated user can create, read, update, or delete their projects.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "projectId",
+              "description": "The unique identifier of the project."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/skills/{skillId}",
+        "definition": {
+          "entityName": "Skill",
+          "schema": {
+            "$ref": "#/backend/entities/Skill"
+          },
+          "description": "Stores skills owned by a specific user. Path-based ownership ensures only the authenticated user can create, read, update, or delete their skills.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "skillId",
+              "description": "The unique identifier of the skill."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/messages/{messageId}",
+        "definition": {
+          "entityName": "Message",
+          "schema": {
+            "$ref": "#/backend/entities/Message"
+          },
+          "description": "Stores messages from the contact form. Open for creation by anyone, but restricted from being read, updated, or deleted.",
+          "params": [
+             {
+              "name": "messageId",
+              "description": "The unique identifier of the message."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "Given the application requirements for a personal portfolio showcasing projects and skills, a straightforward and secure Firestore structure is recommended. This structure focuses on path-based ownership and structural segregation to simplify security rules and enhance maintainability. The key entities are 'Project', 'Skill', and 'Message'.\n\n*   **/users/{userId}/projects/{projectId}**:  Each user owns their projects. This path enables simple, secure rules based on `request.auth.uid == userId`. No denormalization is required as ownership is implicit in the path.  This structure facilitates secure `list` operations, fulfilling the QAP requirement.\n*   **/users/{userId}/skills/{skillId}**: Each user owns their skills. Similar to projects, this path enables secure rules based on `request.auth.uid == userId`, guaranteeing ownership and simplifying security. No denormalization is needed. This structure also facilitates secure `list` operations, fulfilling the QAP requirement.\n*   **/messages/{messageId}**: This collection stores messages from the public contact form. It is write-once and read-never for clients, ensuring that submitted messages are secure and private."
+  }
+}
