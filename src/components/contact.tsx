@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -11,9 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { collection } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
-import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Send } from 'lucide-react';
 
 const formSchema = z.object({
@@ -26,7 +22,6 @@ type ContactFormValues = z.infer<typeof formSchema>;
 
 export function Contact() {
   const { toast } = useToast();
-  const firestore = useFirestore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ContactFormValues>({
@@ -39,31 +34,35 @@ export function Contact() {
   });
 
   async function onSubmit(data: ContactFormValues) {
-    if (!firestore) return;
     setIsSubmitting(true);
-
     try {
-      const messagesCollection = collection(firestore, 'messages');
-      // Usar la función no bloqueante para mayor robustez
-      await addDocumentNonBlocking(messagesCollection, {
-        ...data,
-        createdAt: new Date(),
+      const response = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
 
-      toast({
-        title: 'Nachricht gesendet!',
-        description: "Danke für deine Nachricht. Ich melde mich bald bei dir.",
-      });
-      form.reset();
-    } catch (error) {
-      console.error('Fehler beim Senden der Nachricht:', error);
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Nachricht gesendet!',
+          description: 'Danke für deine Nachricht. Ich melde mich bald bei dir.',
+        });
+        form.reset();
+      } else {
+        throw new Error(result.error || 'Ein unbekannter Fehler ist aufgetreten.');
+      }
+    } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Oh nein! Etwas ist schiefgelaufen.',
-        description: 'Beim Senden deiner Nachricht ist ein Problem aufgetreten. Bitte versuche es erneut.',
+        title: 'Fehler beim Senden',
+        description: error.message || 'Die Nachricht konnte nicht gesendet werden. Bitte versuche es später erneut.',
       });
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   }
 
