@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ClientLayout } from '@/components/client-layout';
-import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
   title: 'Dynamisches Portfolio',
@@ -22,11 +21,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <FirebaseClientProvider>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
-        </FirebaseClientProvider>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
         <Toaster />
       </body>
     </html>
