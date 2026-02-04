@@ -2312,19 +2312,25 @@ body.modal-open {
   }
 
   .case-extra {
-    min-height: auto;
+    min-height: 190px;
   }
 
   .extra-front,
   .extra-body {
-    position: static;
+    position: absolute;
+    inset: 18px;
+  }
+
+  .extra-front {
+    margin-bottom: 0;
     opacity: 1;
     transform: none;
   }
 
-
-  .extra-front {
-    margin-bottom: 10px;
+  .extra-body {
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
   }
 
   .project-header {
@@ -3159,6 +3165,7 @@ body.is-scrolling .case-diagram {
   .project-actions .btn {
     width: 100%;
     justify-content: flex-start;
+    white-space: normal;
   }
 
   .case {
@@ -3190,5 +3197,32 @@ body.is-scrolling .case-diagram {
   .footer-brand {
     width: 100%;
     margin-right: 0;
+  }
+
+  .terminal-output {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .code-block {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow: auto;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .case-extra:hover .extra-front,
+  .case-extra:focus-within .extra-front {
+    opacity: 1;
+    transform: none;
+  }
+
+  .case-extra:hover .extra-body,
+  .case-extra:focus-within .extra-body {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
