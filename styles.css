@@ -579,7 +579,7 @@ body.show-quantum-scroll .quantum-scroll {
   z-index: 0;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
+  background-size: cover;
   opacity: 1;
   filter: none;
   transform: translate3d(0, 0, 0);
@@ -3015,7 +3015,7 @@ body.is-scrolling .case-diagram {
   .hero--tangent-bg::after {
     inset: 0;
     background-position: center;
-    background-size: contain;
+    background-size: cover;
     opacity: 1;
     filter: none;
   }
