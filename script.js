@@ -51,9 +51,9 @@ const translations = {
     sentinelCaseDecisions: 'MVVM-Trennung, SQLite-Historie, 60 FPS Charts, Unit Tests',
     sentinelCaseResult: 'Niedrige Latenz, stabile Darstellung, robuste Logik',
     extraFolderTitle: 'Folder Structure',
-    extraFolderHint: 'Hover to view',
+    extraFolderHint: 'Details anzeigen',
     extraCodeTitle: 'Technical Fix',
-    extraCodeHint: 'Hover for details',
+    extraCodeHint: 'Details anzeigen',
     playgroundTitle: 'Mini playground',
     playgroundOpen: 'Playground starten',
     playgroundRun: 'Run',
@@ -204,9 +204,9 @@ const translations = {
     sentinelCaseDecisions: 'MVVM separation, SQLite history, 60 FPS charts, unit tests',
     sentinelCaseResult: 'Low latency, stable rendering, robust logic',
     extraFolderTitle: 'Folder Structure',
-    extraFolderHint: 'Hover to view',
+    extraFolderHint: 'Show details',
     extraCodeTitle: 'Technical Fix',
-    extraCodeHint: 'Hover for details',
+    extraCodeHint: 'Show details',
     playgroundTitle: 'Mini playground',
     playgroundOpen: 'Play playground',
     playgroundRun: 'Run',
@@ -998,22 +998,40 @@ if (siteHeader) {
   const heroSection = document.querySelector('#top');
   if (heroSection) {
     let isCompact = false;
+    const setHeaderCompact = (nextCompact) => {
+      if (nextCompact === isCompact) return;
+      isCompact = nextCompact;
+      siteHeader.classList.toggle('is-compact', isCompact);
+    };
+
+    const syncCompactFromScroll = () => {
+      const headerHeight = siteHeader.offsetHeight || 80;
+      const heroBottom = heroSection.getBoundingClientRect().bottom;
+      setHeaderCompact(heroBottom <= headerHeight + 24);
+    };
+
     const heroObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const ratio = entry.intersectionRatio;
           if (!isCompact && ratio < 0.12) {
-            isCompact = true;
-            siteHeader.classList.add('is-compact');
+            setHeaderCompact(true);
           } else if (isCompact && ratio > 0.35) {
-            isCompact = false;
-            siteHeader.classList.remove('is-compact');
+            setHeaderCompact(false);
           }
         });
       },
       { threshold: [0, 0.12, 0.35, 1] }
     );
     heroObserver.observe(heroSection);
+
+    const touchFallback = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (touchFallback) {
+      window.addEventListener('scroll', syncCompactFromScroll, { passive: true });
+      window.addEventListener('resize', syncCompactFromScroll);
+      window.addEventListener('load', syncCompactFromScroll, { once: true });
+      syncCompactFromScroll();
+    }
   }
 }
 
@@ -1476,8 +1494,26 @@ function stopSentinelReadout() {
 if (sentinelFrame) {
   sentinelFrame.addEventListener('mouseenter', startSentinelReadout);
   sentinelFrame.addEventListener('mouseleave', stopSentinelReadout);
+  sentinelFrame.addEventListener('pointerenter', startSentinelReadout);
+  sentinelFrame.addEventListener('pointerleave', stopSentinelReadout);
   sentinelFrame.addEventListener('focusin', startSentinelReadout);
   sentinelFrame.addEventListener('focusout', stopSentinelReadout);
+
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+    const sentinelObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startSentinelReadout();
+          } else {
+            stopSentinelReadout();
+          }
+        });
+      },
+      { threshold: 0.45 }
+    );
+    sentinelObserver.observe(sentinelFrame);
+  }
 }
 
 const scrollThumb = document.querySelector('.scroll-thumb');
@@ -1692,11 +1728,12 @@ if (scrollTicks) {
 
 const quantumScroll = document.querySelector('.quantum-scroll');
 if (quantumScroll) {
+  const isTouchPointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
   const track = quantumScroll.querySelector('.quantum-track');
   const node = quantumScroll.querySelector('.quantum-node');
   const field = quantumScroll.querySelector('.quantum-wave-field');
   const newsSection = document.getElementById('news');
-  if (track && node && field && newsSection) {
+  if (track && node && field && newsSection && !isTouchPointer) {
     const particleCount = 5;
     const particles = [];
     const waveLines = [];
@@ -1831,10 +1868,12 @@ if (quantumScroll) {
       state.targetY = clamp(y, 0, getMax());
       state.y = state.targetY;
       setScrollFromTarget();
-      event.preventDefault();
     });
 
     window.addEventListener('pointerup', () => {
+      state.isObserved = false;
+    });
+    window.addEventListener('pointercancel', () => {
       state.isObserved = false;
     });
 
@@ -2196,6 +2235,10 @@ if (conceptModal && conceptTriggers.length) {
   let panOriginY = 0;
   let panRaf = null;
   let zoom = 1;
+  let pinchDistance = 0;
+  let pinchMidX = 0;
+  let pinchMidY = 0;
+  const activePointers = new Map();
   const MIN_ZOOM = 0.6;
   const MAX_ZOOM = 2.4;
 
@@ -2204,30 +2247,25 @@ if (conceptModal && conceptTriggers.length) {
     activeMap.style.transform = `translate3d(${panX}px, ${panY}px, 0) translate(-50%, -50%) scale(${zoom})`;
   };
 
-  const startPan = (event) => {
-    if (!modalBody || !activeMap) return;
-    if (event.button !== 0) return;
-    if (event.target.closest('button')) return;
-    isPanning = true;
-    modalBody.classList.add('is-grabbing');
-    panStartX = event.clientX;
-    panStartY = event.clientY;
-    panOriginX = panX;
-    panOriginY = panY;
-    event.preventDefault();
-  };
-
-  const movePan = (event) => {
-    if (!isPanning || !modalBody) return;
-    const dx = event.clientX - panStartX;
-    const dy = event.clientY - panStartY;
-    panX = panOriginX + dx;
-    panY = panOriginY + dy;
-    if (panRaf) cancelAnimationFrame(panRaf);
+  const queueApplyPan = () => {
+    if (panRaf) return;
     panRaf = requestAnimationFrame(() => {
       applyPan();
       panRaf = null;
     });
+  };
+
+  const setZoomAtPoint = (nextZoom, clientX, clientY) => {
+    if (!modalBody || !activeMap) return;
+    if (nextZoom === zoom) return;
+    const rect = modalBody.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const f = nextZoom / zoom;
+    panX = f * panX + (1 - f) * (clientX - centerX);
+    panY = f * panY + (1 - f) * (clientY - centerY);
+    zoom = nextZoom;
+    queueApplyPan();
   };
 
   const endPan = () => {
@@ -2236,35 +2274,117 @@ if (conceptModal && conceptTriggers.length) {
     modalBody.classList.remove('is-grabbing');
   };
 
-  const zoomAtPoint = (event) => {
-    if (!modalBody || !activeMap) return;
-    const rect = modalBody.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const pointerX = event.clientX;
-    const pointerY = event.clientY;
-    const zoomFactor = Math.exp(-event.deltaY * 0.0015);
-    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * zoomFactor));
-    if (nextZoom === zoom) return;
-    const f = nextZoom / zoom;
-    panX = f * panX + (1 - f) * (pointerX - centerX);
-    panY = f * panY + (1 - f) * (pointerY - centerY);
-    zoom = nextZoom;
-    applyPan();
+  const beginDragPan = (clientX, clientY) => {
+    if (!modalBody) return;
+    isPanning = true;
+    modalBody.classList.add('is-grabbing');
+    panStartX = clientX;
+    panStartY = clientY;
+    panOriginX = panX;
+    panOriginY = panY;
   };
 
-  modalBody.addEventListener('mousedown', startPan);
-  modalBody.addEventListener('mousemove', movePan);
-  modalBody.addEventListener('mouseup', endPan);
-  modalBody.addEventListener('mouseleave', endPan);
-  document.addEventListener('mouseup', endPan);
+  const onPointerDown = (event) => {
+    if (!modalBody || !activeMap) return;
+    if (event.target.closest('button')) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (typeof modalBody.setPointerCapture === 'function') {
+      try {
+        modalBody.setPointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore capture failures on unsupported browsers.
+      }
+    }
+    if (activePointers.size === 1) {
+      beginDragPan(event.clientX, event.clientY);
+    } else if (activePointers.size === 2) {
+      const [a, b] = Array.from(activePointers.values());
+      pinchDistance = Math.hypot(b.x - a.x, b.y - a.y);
+      pinchMidX = (a.x + b.x) / 2;
+      pinchMidY = (a.y + b.y) / 2;
+      isPanning = false;
+      modalBody.classList.add('is-grabbing');
+    }
+    event.preventDefault();
+  };
+
+  const onPointerMove = (event) => {
+    if (!modalBody || !activeMap) return;
+    if (!activePointers.has(event.pointerId)) return;
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (activePointers.size >= 2) {
+      const [a, b] = Array.from(activePointers.values());
+      const nextDistance = Math.hypot(b.x - a.x, b.y - a.y);
+      const nextMidX = (a.x + b.x) / 2;
+      const nextMidY = (a.y + b.y) / 2;
+
+      if (pinchDistance > 0 && nextDistance > 0) {
+        const ratio = nextDistance / pinchDistance;
+        const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * ratio));
+        setZoomAtPoint(nextZoom, nextMidX, nextMidY);
+      }
+
+      panX += nextMidX - pinchMidX;
+      panY += nextMidY - pinchMidY;
+      pinchDistance = nextDistance;
+      pinchMidX = nextMidX;
+      pinchMidY = nextMidY;
+      queueApplyPan();
+      event.preventDefault();
+      return;
+    }
+
+    if (!isPanning) return;
+    const dx = event.clientX - panStartX;
+    const dy = event.clientY - panStartY;
+    panX = panOriginX + dx;
+    panY = panOriginY + dy;
+    queueApplyPan();
+    event.preventDefault();
+  };
+
+  const onPointerUp = (event) => {
+    if (activePointers.has(event.pointerId)) {
+      activePointers.delete(event.pointerId);
+    }
+    if (modalBody && typeof modalBody.hasPointerCapture === 'function' && modalBody.hasPointerCapture(event.pointerId)) {
+      try {
+        modalBody.releasePointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore release failures on unsupported browsers.
+      }
+    }
+
+    if (activePointers.size === 1) {
+      const remaining = Array.from(activePointers.values())[0];
+      beginDragPan(remaining.x, remaining.y);
+      return;
+    }
+
+    if (activePointers.size === 0) {
+      pinchDistance = 0;
+      endPan();
+    }
+  };
+
+  modalBody.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointermove', onPointerMove, { passive: false });
+  window.addEventListener('pointerup', onPointerUp);
+  window.addEventListener('pointercancel', onPointerUp);
   modalBody.addEventListener('wheel', (event) => {
-    zoomAtPoint(event);
+    const zoomFactor = Math.exp(-event.deltaY * 0.0015);
+    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * zoomFactor));
+    setZoomAtPoint(nextZoom, event.clientX, event.clientY);
     event.preventDefault();
   }, { passive: false });
 
   closeConcept = () => {
     if (modalBody) {
+      activePointers.clear();
+      pinchDistance = 0;
+      endPan();
       modalBody.innerHTML = '';
     }
     activeMap = null;

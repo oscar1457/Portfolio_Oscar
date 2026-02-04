@@ -2260,115 +2260,6 @@ body.modal-open {
   }
 }
 
-@media (max-width: 720px) {
-  .container {
-    width: min(100%, 100% - 32px);
-  }
-
-  .header-grid {
-    grid-template-columns: 1fr auto auto;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .nav {
-    flex-wrap: nowrap;
-    gap: 12px;
-  }
-
-  .hero {
-    padding: 110px 0 80px;
-  }
-
-  .project {
-    grid-template-columns: 1fr;
-  }
-
-  .scroll-orbit-indicator {
-    width: 68px;
-    height: 68px;
-    right: 16px;
-  }
-
-  .case {
-    grid-template-columns: 1fr;
-    padding: 24px;
-  }
-
-  .project-index {
-    font-size: 2rem;
-  }
-
-  .case-index {
-    font-size: 2rem;
-  }
-
-  .case-list::before {
-    display: none;
-  }
-
-  .case-extras {
-    grid-template-columns: 1fr;
-  }
-
-  .case-extra {
-    min-height: 190px;
-  }
-
-  .extra-front,
-  .extra-body {
-    position: absolute;
-    inset: 18px;
-  }
-
-  .extra-front {
-    margin-bottom: 0;
-    opacity: 1;
-    transform: none;
-  }
-
-  .extra-body {
-    opacity: 0;
-    transform: translateY(6px);
-    pointer-events: none;
-  }
-
-  .project-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .timeline-item {
-    grid-template-columns: 1fr;
-  }
-
-  .section-rail {
-    display: none;
-  }
-
-  .scroll-track {
-    display: none;
-  }
-
-  .scroll-orbit-indicator {
-    display: none;
-  }
-
-  .quantum-scroll {
-    display: none;
-  }
-
-  .news-card {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .news-meta,
-  .news-badges {
-    justify-content: center;
-  }
-}
-
 /* ========== Design Enhancements ========== */
 
 /* -- 1. Personal Signature -- */
@@ -2437,9 +2328,6 @@ body.is-scrolling .case-diagram {
   transition: none;
 }
 
-  body.is-scrolling .case-extra {
-    pointer-events: none;
-  }
   /* -- 4. Case Study Diagrams -- */
   .case-diagram {
     margin: 32px 0;
@@ -3026,30 +2914,52 @@ body.is-scrolling .case-diagram {
     user-select: text;
   }
 
+  .container {
+    width: min(100%, 100% - 32px);
+  }
+
   .site-header {
     border-radius: 0 0 16px 16px;
+    transition: background 220ms ease, box-shadow 220ms ease, border-radius 220ms ease;
   }
 
   .header-grid {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand lang"
+      "nav nav";
+    align-items: end;
+    row-gap: 8px;
     gap: 8px;
     padding: 10px 0;
+    transition: padding 220ms ease, row-gap 220ms ease;
+  }
+
+  .brand-oq {
+    grid-area: brand;
   }
 
   .nav {
-    grid-column: auto;
+    grid-area: nav;
     order: 0;
     width: 100%;
     min-width: 0;
     gap: 6px;
-    justify-content: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
     overflow-x: auto;
     white-space: nowrap;
-    padding-bottom: 0;
+    padding: 1px 2px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
   }
 
   .nav a {
+    flex: 0 0 auto;
     font-size: 0.72rem;
     padding: 5px 8px;
     letter-spacing: 0.01em;
@@ -3060,6 +2970,7 @@ body.is-scrolling .case-diagram {
   }
 
   .lang-toggle {
+    grid-area: lang;
     justify-self: end;
     transform: scale(0.92);
     transform-origin: right center;
@@ -3067,7 +2978,8 @@ body.is-scrolling .case-diagram {
 
   .site-header.is-compact {
     background: var(--surface);
-    box-shadow: var(--shadow-outer);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.14), -10px -10px 20px rgba(255, 255, 255, 0.75);
+    border-radius: 0 0 12px 12px;
   }
 
   .site-header.is-compact .container {
@@ -3078,13 +2990,17 @@ body.is-scrolling .case-diagram {
 
   .site-header.is-compact .header-grid {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand lang"
+      "nav nav";
     width: auto;
     background: transparent;
     box-shadow: none;
     left: auto;
     transform: none;
-    padding: 10px 0;
+    row-gap: 6px;
+    padding: 7px 0;
   }
 
   .site-header.is-compact .nav,
@@ -3143,10 +3059,17 @@ body.is-scrolling .case-diagram {
   .project {
     padding: 24px 0;
     gap: 14px;
+    grid-template-columns: 1fr;
   }
 
   .project-index {
     font-size: 2rem;
+  }
+
+  .project-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .project h3 {
@@ -3159,6 +3082,63 @@ body.is-scrolling .case-diagram {
 
   #projects .visual-frame {
     height: 230px;
+  }
+
+  .visual-frame.has-image .preview-img,
+  .visual-frame.has-tag .preview-img {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    object-fit: cover;
+    object-position: center;
+    transform: none;
+  }
+
+  .sentinel-logo {
+    width: 26px;
+    height: 26px;
+    left: 8px;
+    top: 8px;
+  }
+
+  .sentinel-readout {
+    right: 8px;
+    bottom: 8px;
+    padding: 8px 9px;
+    gap: 4px 9px;
+    font-size: 0.66rem;
+    border-radius: 10px;
+  }
+
+  .sentinel-readout span {
+    font-size: 0.54rem;
+    letter-spacing: 0.13em;
+  }
+
+  .case-list::before {
+    display: none;
+  }
+
+  .case {
+    padding: 20px 16px;
+  }
+
+  .case-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .case-header h3 {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .case-extras {
+    grid-template-columns: 1fr;
   }
 
   .project-meta {
@@ -3180,8 +3160,12 @@ body.is-scrolling .case-diagram {
   }
 
   .case-extra {
-    min-height: 210px;
+    min-height: 220px;
     cursor: pointer;
+  }
+
+  .case-extra.no-scroll {
+    min-height: 240px;
   }
 
   .extra-front,
@@ -3199,10 +3183,8 @@ body.is-scrolling .case-diagram {
     opacity: 0;
     transform: translateY(6px);
     pointer-events: none;
-  }
-
-  .case {
-    padding: 16px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .case-grid {
@@ -3211,10 +3193,79 @@ body.is-scrolling .case-diagram {
 
   .timeline-item {
     gap: 10px;
+    grid-template-columns: 1fr;
+  }
+
+  .section-rail,
+  .scroll-track,
+  .scroll-orbit-indicator,
+  .quantum-scroll {
+    display: none;
+  }
+
+  .news-flip {
+    display: grid;
+    gap: 14px;
+  }
+
+  .news-front,
+  .news-back {
+    position: static;
+    opacity: 1;
+    transform: none;
+  }
+
+  .news-flip:hover .news-front,
+  .news-flip:hover .news-back {
+    opacity: 1;
+  }
+
+  .news-card {
+    grid-template-columns: 1fr;
+    text-align: left;
+    gap: 14px;
+    padding: 20px;
   }
 
   .news-body h3 {
-    font-size: 1.18rem;
+    font-size: 1.12rem;
+  }
+
+  .news-meta,
+  .news-badges {
+    justify-content: flex-start;
+  }
+
+  .news-icon img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .message-callout {
+    padding: 0 16px;
+  }
+
+  .callout {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 24px;
+  }
+
+  .contact-grid > :first-child {
+    text-align: center;
+  }
+
+  .contact-card {
+    width: 100%;
+    max-width: 560px;
   }
 
   .contact-email {
@@ -3230,6 +3281,36 @@ body.is-scrolling .case-diagram {
   .footer-brand {
     width: 100%;
     margin-right: 0;
+    justify-content: center;
+  }
+
+  .concept-modal-card,
+  .nordbund-modal-card,
+  .sentinel-modal-card {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .concept-modal-head,
+  .nordbund-modal-head,
+  .sentinel-modal-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f7f7f7;
+    padding: 10px 12px;
+  }
+
+  .concept-modal-title,
+  .nordbund-modal-title,
+  .sentinel-modal-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .concept-modal-body {
+    padding: 0;
   }
 
   .terminal-output {
@@ -3247,6 +3328,21 @@ body.is-scrolling .case-diagram {
 }
 
 @media (hover: none), (pointer: coarse) {
+  .quantum-scroll,
+  .scroll-track,
+  .scroll-orbit-indicator {
+    display: none !important;
+  }
+
+  .visual-frame.has-image .sentinel-overlay {
+    opacity: 1;
+  }
+
+  .visual-frame.has-image .sentinel-logo {
+    opacity: 0.9;
+    transform: translateY(0) scale(1);
+  }
+
   .case-extra:hover .extra-front,
   .case-extra:focus-within .extra-front {
     opacity: 1;
