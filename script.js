@@ -1087,7 +1087,8 @@ const dotsCanvas = document.querySelector('.hero-dots');
 
 // Home background (Hero): halftone canvas animation (black/white), optimized for mobile.
 // Replaces the previous chromatic dot-field to avoid flicker and reduce input jank.
-if (hero && dotsCanvas) {
+// Note: only enabled when explicitly requested via class to avoid running hidden canvases.
+if (hero && dotsCanvas && hero.classList.contains('hero--halftone')) {
   initHeroHalftoneBackground(hero, dotsCanvas);
 }
 
