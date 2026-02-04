@@ -320,7 +320,6 @@ let brandAnimFrameIndex = 0;
 let brandAnimLastStep = 0;
 let brandAnimStartedAt = 0;
 let updateProjectRanges = null;
-let heroAggressiveMode = false;
 let i18nFadeTimer = null;
 let i18nFadeRaf = null;
 const I18N_FADE_MS = 260;
@@ -941,15 +940,8 @@ if (brandO) {
 const storedLang = localStorage.getItem('lang');
 setLanguage(storedLang || 'de', { animate: false });
 
-const videoOverlay = document.querySelector('.video-overlay');
-const videoToggle = document.querySelector('[data-video-toggle]');
-const heroVideo = document.querySelector('.hero-video');
-const videoFallback = document.querySelector('[data-video-fallback]');
-const videoRobot = document.querySelector('.pixel-robot');
 const siteHeader = document.querySelector('.site-header');
 const nav = document.querySelector('.nav');
-let showVideoFallback = null;
-let hideVideoFallback = null;
 
 const brandTrigger = document.querySelector('.brand-oq');
 if (brandTrigger && typeof startBrandAnimation === 'function') {
@@ -976,50 +968,6 @@ if (brandO && typeof stopBrandAnimation === 'function') {
     if (document.visibilityState === 'hidden') {
       stopBrandAnimation();
     }
-  });
-}
-
-if (videoToggle && videoFallback && videoOverlay) {
-  const showFallback = () => {
-    videoFallback.classList.add('is-visible');
-    videoFallback.setAttribute('aria-hidden', 'false');
-    videoOverlay.classList.add('is-hidden');
-    videoToggle.classList.add('is-hidden');
-    heroAggressiveMode = true;
-    if (heroVideo) {
-      heroVideo.pause();
-    }
-  };
-
-  const hideFallback = () => {
-    videoFallback.classList.remove('is-visible');
-    videoFallback.setAttribute('aria-hidden', 'true');
-    videoOverlay.classList.remove('is-hidden');
-    videoToggle.classList.remove('is-hidden');
-    heroAggressiveMode = false;
-  };
-
-  showVideoFallback = showFallback;
-  hideVideoFallback = hideFallback;
-
-  videoToggle.addEventListener('click', showFallback);
-}
-
-if (videoRobot) {
-  let robotPulseTimer = null;
-  videoRobot.addEventListener('click', () => {
-    videoRobot.classList.remove('is-react');
-    void videoRobot.offsetWidth;
-    videoRobot.classList.add('is-react');
-    if (robotPulseTimer) {
-      clearTimeout(robotPulseTimer);
-    }
-    robotPulseTimer = setTimeout(() => {
-      videoRobot.classList.remove('is-react');
-      if (typeof hideVideoFallback === 'function') {
-        hideVideoFallback();
-      }
-    }, 360);
   });
 }
 
@@ -1136,89 +1084,95 @@ if (nav) {
 
 const hero = document.querySelector('.hero');
 const dotsCanvas = document.querySelector('.hero-dots');
-const useHeroGradientFlow = window.matchMedia('(max-width: 720px), (hover: none), (pointer: coarse)').matches;
-if (hero && dotsCanvas && useHeroGradientFlow) {
-  hero.classList.add('hero-gradient-flow');
-  dotsCanvas.style.display = 'none';
+
+// Home background (Hero): halftone canvas animation (black/white), optimized for mobile.
+// Replaces the previous chromatic dot-field to avoid flicker and reduce input jank.
+if (hero && dotsCanvas) {
+  initHeroHalftoneBackground(hero, dotsCanvas);
 }
 
-if (hero && dotsCanvas && !useHeroGradientFlow) {
-  const ctx = dotsCanvas.getContext('2d', { alpha: true, desynchronized: true });
+function initHeroHalftoneBackground(heroEl, canvas) {
+  const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+  if (!ctx) return;
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isCoarsePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
   let width = 0;
   let height = 0;
-  let dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-  const maxCanvasWidth = 1920;
-  let mouse = { x: 0, y: 0, active: false };
-  const spacing = 16;
-  const radius = 120;
-  const bandWidth = 90;
-  const waveAmp = 30;
-  const waveSpeed = 0.001;
-  const bandStep = 16;
-  const jitterCache = [];
-  const alphaBuckets = 26;
-  const batches = Array.from({ length: alphaBuckets }, () => ({
-    x: [], y: [], rx: [], ry: [], rot: []
-  }));
-  const colorBatches = Array.from({ length: alphaBuckets }, () => ({
-    x: [], y: [], rx: [], ry: [], rot: []
-  }));
-  const dotRed = [201, 42, 42];
-  const colorPalette = [
-    [47, 158, 68],
-    [245, 159, 0],
-    [28, 126, 214],
-    [214, 51, 108]
-  ];
+  let dpr = 1;
+  let spacing = 10;
+  let maxDotRadius = 4;
+  let clouds = [];
   let animId = null;
   let running = false;
-  let isVisible = false;
-  let resizeTimer = null;
-  let pendingMouseEvent = null; // For throttling mouse events
-  let heroScrollTimer = null;
+  let isVisible = true;
+  let lastFrame = 0;
+  let time = 0;
   let freezeUntil = 0;
-  let lastFrameTime = 0;
-  let renderDensity = 1;
-  let densityScore = 0;
-  let densityMode = 0;
-  let samplePositions = [];
+  let resizeTimer = null;
 
-  function buildSamplePositions() {
-    samplePositions = [];
-    const baseSpacing = width > 1600 ? spacing * 1.5 : spacing;
-    const step = Math.max(8, baseSpacing * renderDensity);
-    for (let x = 0; x <= width; x += step) {
-      samplePositions.push(x);
+  const targetPoints = isCoarsePointer ? 4200 : 7800;
+  const fpsCap = isCoarsePointer ? 30 : 50;
+  const maxDpr = isCoarsePointer ? 1 : 1.25;
+
+  class Cloud {
+    constructor() {
+      this.reset();
+    }
+
+    reset() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 5.0;
+      this.vy = (Math.random() - 0.5) * 5.0;
+      this.radius = 250 + Math.random() * 450;
+      this.strength = 0.8 + Math.random() * 0.5;
+    }
+
+    update(dt) {
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+
+      if (this.x < -this.radius || this.x > width + this.radius) this.vx *= -1;
+      if (this.y < -this.radius || this.y > height + this.radius) this.vy *= -1;
+    }
+  }
+
+  function buildClouds() {
+    const area = width * height;
+    const count = Math.round(clamp(area / 180000, 7, 12));
+    clouds = [];
+    for (let i = 0; i < count; i += 1) {
+      clouds.push(new Cloud());
     }
   }
 
   function resize() {
-    const rect = hero.getBoundingClientRect();
-    width = Math.min(rect.width, maxCanvasWidth);
-    height = rect.height;
-    dpr = window.devicePixelRatio > 1 ? 1.25 : 1;
-    dotsCanvas.width = Math.floor(width * dpr);
-    dotsCanvas.height = Math.floor(height * dpr);
-    dotsCanvas.style.width = '100%';
-    dotsCanvas.style.height = '100%';
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(1, Math.round(rect.width));
+    height = Math.max(1, Math.round(rect.height));
+
+    const area = width * height;
+    spacing = clamp(Math.sqrt(area / targetPoints), 10, isCoarsePointer ? 18 : 16);
+    maxDotRadius = spacing * 0.4;
+
+    dpr = clamp(window.devicePixelRatio || 1, 1, maxDpr);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const steps = Math.floor(maxCanvasWidth / spacing) + 1;
-    jitterCache.length = steps;
-    for (let i = 0; i < steps; i += 1) {
-      const h = Math.sin(i * 12.9898) * 43758.5453;
-      jitterCache[i] = (h - Math.floor(h)) * 2 - 1;
-    }
-    buildSamplePositions();
+
+    buildClouds();
   }
 
-  function startAnimation() {
-    if (!running && isVisible) {
-      running = true;
-      if (!animId) animId = requestAnimationFrame(render);
-    }
+  function start() {
+    if (running || !isVisible) return;
+    running = true;
+    if (!animId) animId = requestAnimationFrame(tick);
   }
 
-  function stopAnimation() {
+  function stop() {
     running = false;
     if (animId) {
       cancelAnimationFrame(animId);
@@ -1226,300 +1180,118 @@ if (hero && dotsCanvas && !useHeroGradientFlow) {
     }
   }
 
-  function render(time) {
-    if (!running) return;
+  function drawFrame(dt) {
+    time += 0.025 * dt;
 
-    // Process throttled mouse event
-    if (pendingMouseEvent) {
-      const rect = dotsCanvas.getBoundingClientRect();
-      mouse.x = pendingMouseEvent.clientX - rect.left;
-      mouse.y = pendingMouseEvent.clientY - rect.top;
-      mouse.active = mouse.x >= 0 && mouse.x <= rect.width && mouse.y >= 0 && mouse.y <= rect.height;
-      pendingMouseEvent = null;
+    // White paper base.
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    for (let i = 0; i < clouds.length; i += 1) {
+      clouds[i].update(dt);
     }
 
-    if (time < freezeUntil) {
-      animId = requestAnimationFrame(render);
-      return;
-    }
+    const cols = Math.ceil(width / spacing);
+    const rows = Math.ceil(height / spacing);
 
-    const minDelta = 1000 / 60;
-    const frameDelta = lastFrameTime ? (time - lastFrameTime) : minDelta;
-    if (frameDelta < minDelta) {
-      animId = requestAnimationFrame(render);
-      return;
-    }
-    lastFrameTime = time;
+    for (let i = 0; i < cols; i += 1) {
+      const x = i * spacing + spacing * 0.5;
+      for (let j = 0; j < rows; j += 1) {
+        const y = j * spacing + spacing * 0.5;
 
-    if (frameDelta > 22) {
-      densityScore = Math.min(20, densityScore + 2);
-    } else {
-      densityScore = Math.max(0, densityScore - 1);
-    }
+        let totalDensity = 0;
+        for (let k = 0; k < clouds.length; k += 1) {
+          const c = clouds[k];
+          const dx = x - c.x;
+          const dy = y - c.y;
+          const dist2 = dx * dx + dy * dy;
+          const r2 = c.radius * c.radius;
+          if (dist2 >= r2) continue;
 
-    // Hysteresis to avoid density "popping" (can look like flicker on cursor hover).
-    let nextMode = densityMode;
-    if (densityMode === 0) {
-      if (densityScore > 14) nextMode = 2;
-      else if (densityScore > 8) nextMode = 1;
-    } else if (densityMode === 1) {
-      if (densityScore > 16) nextMode = 2;
-      else if (densityScore < 4) nextMode = 0;
-    } else {
-      if (densityScore < 10) nextMode = 1;
-    }
+          const dist = Math.sqrt(dist2);
+          const inv = 1 - dist / c.radius;
+          if (inv <= 0) continue;
 
-    if (nextMode !== densityMode) {
-      densityMode = nextMode;
-      renderDensity = densityMode === 2 ? 1.3 : (densityMode === 1 ? 1.15 : 1);
-      buildSamplePositions();
-    }
-
-    ctx.clearRect(0, 0, width, height);
-    for (let i = 0; i < alphaBuckets; i++) {
-      batches[i].x.length = 0;
-      batches[i].y.length = 0;
-      batches[i].rx.length = 0;
-      batches[i].ry.length = 0;
-      batches[i].rot.length = 0;
-      colorBatches[i].x.length = 0;
-      colorBatches[i].y.length = 0;
-      colorBatches[i].rx.length = 0;
-      colorBatches[i].ry.length = 0;
-      colorBatches[i].rot.length = 0;
-    }
-    const t = time * waveSpeed;
-    const band1 = (x) => {
-      const base = height * 0.35;
-      return base + Math.sin(x * 0.012 + t) * waveAmp + Math.sin(x * 0.004 - t * 1.2) * 18;
-    };
-    const band2 = (x) => {
-      const base = height * 0.68;
-      return base + Math.sin(x * 0.011 - t * 1.1) * (waveAmp * 0.9) + Math.sin(x * 0.003 + t) * 14;
-    };
-    const band3 = (x) => {
-      const base = height * 0.52;
-      return base + Math.sin(x * 0.013 + t * 0.8) * (waveAmp * 0.6) + Math.sin(x * 0.002 - t * 0.9) * 12;
-    };
-
-    const cx = width * 0.55;
-    const cy = height * 0.52;
-    const rx = width * 0.38;
-    const ry = height * 0.26;
-
-    const hasCursor = mouse.active;
-    const cursorX = mouse.x;
-    const cursorY = mouse.y;
-    for (let i = 0; i < samplePositions.length; i += 1) {
-      const x = samplePositions[i];
-      const y1 = band1(x);
-      const y2 = band2(x);
-      const y3 = band3(x);
-      drawBand(x, y1);
-      drawBand(x, y2);
-      drawBand(x, y3);
-    }
-
-    function drawBand(x, centerY) {
-      let mx = 0;
-      let isMouseNearX = false;
-      if (hasCursor) {
-        mx = cursorX - x;
-        isMouseNearX = Math.abs(mx) < radius;
-      }
-
-      for (let offset = -bandWidth; offset <= bandWidth; offset += bandStep) {
-        const y = centerY + offset;
-        if (y < 0 || y > height) continue;
-        const nx = (x - cx) / rx;
-        const ny = (y - cy) / ry;
-        const ellipse = nx * nx + ny * ny;
-        if (ellipse > 1.05) continue;
-        const d = Math.abs(offset);
-        const falloff = 1 - d / bandWidth;
-        let size = 0.8;
-        let alpha = 0.08;
-        if (falloff > 0.66) {
-          size = 2.6;
-          alpha = 0.24;
-        } else if (falloff > 0.33) {
-          size = 1.8;
-          alpha = 0.16;
-        }
-        const edgeFade = Math.max(0, 1 - (ellipse - 0.7) / 0.35);
-        alpha *= edgeFade;
-
-        let dx = 0;
-        let dy = 0;
-        let colorBoost = 0;
-        if (hasCursor && isMouseNearX) {
-          const my = cursorY - y;
-          if (Math.abs(my) < radius) {
-            const distSq = (mx * mx) + (my * my);
-            if (distSq < (radius * radius) && distSq > 0.001) {
-              const dist = Math.sqrt(distSq);
-              const force = (1 - dist / radius) * 10;
-              dx = -mx / dist * force;
-              dy = -my / dist * force;
-              colorBoost = 1 - dist / radius;
-            }
-          }
+          // inv^1.5 = inv * sqrt(inv) (cheaper than Math.pow).
+          const d = inv * Math.sqrt(inv);
+          totalDensity += d * c.strength;
         }
 
-        const jitter = jitterCache[Math.floor(x / spacing)] || 0;
-        const microNoise = jitterCache[Math.floor((x + y) / 10)] || 0;
-        const rxDot = Math.max(0.5, size * (1.1 + jitter * 0.25));
-        const ryDot = Math.max(0.5, size * (0.85 - jitter * 0.25));
-        const rotation = (jitter * 0.5) + (microNoise * 0.08);
+        const noise = Math.sin((x + y) * 0.015 + time) * 0.1;
+        const finalDensity = Math.max(0, totalDensity + noise);
 
-        const bucketIdx = Math.floor(alpha * 100);
-        if (bucketIdx > 0 && bucketIdx < alphaBuckets) {
-          const b = batches[bucketIdx];
-          b.x.push(x + dx);
-          b.y.push(y + dy);
-          b.rx.push(rxDot);
-          b.ry.push(ryDot);
-          b.rot.push(rotation);
-        }
+        if (finalDensity <= 0.04) continue;
 
-        if (colorBoost > 0.2) {
-          const colorAlpha = alpha * Math.min(1, 0.85 + colorBoost * 3.2);
-          const colorIdx = Math.floor(colorAlpha * 100);
-          if (colorIdx > 0 && colorIdx < alphaBuckets) {
-            const cb = colorBatches[colorIdx];
-            cb.x.push(x + dx);
-            cb.y.push(y + dy);
-            cb.rx.push(rxDot);
-            cb.ry.push(ryDot);
-            cb.rot.push(rotation);
-          }
-        }
-      }
-    }
-    const [rr, rg, rb] = dotRed;
-    ctx.fillStyle = heroAggressiveMode ? `rgb(${rr}, ${rg}, ${rb})` : '#3c3c3c';
-    for (let i = 1; i < alphaBuckets; i++) {
-      const b = batches[i];
-      if (b.x.length === 0) continue;
-      ctx.globalAlpha = i / 100;
-      ctx.beginPath();
-      for (let j = 0; j < b.x.length; j++) {
-        const bx = b.x[j], by = b.y[j], brx = b.rx[j], bry = b.ry[j], brot = b.rot[j];
-        ctx.moveTo(bx + brx * Math.cos(brot), by + brx * Math.sin(brot));
-        ctx.ellipse(bx, by, brx, bry, brot, 0, Math.PI * 2);
-      }
-      ctx.fill();
-    }
+        const r = maxDotRadius * Math.min(finalDensity, 1);
+        const opacity = Math.min(finalDensity * 0.4, 0.6);
 
-    if (hasCursor && !heroAggressiveMode) {
-      const phase = (time * 0.00025) % colorPalette.length;
-      const idx = Math.floor(phase);
-      const fracRaw = phase - idx;
-      const frac = fracRaw * fracRaw * (3 - 2 * fracRaw);
-      const c1 = colorPalette[idx];
-      const c2 = colorPalette[(idx + 1) % colorPalette.length];
-      const r = Math.round(c1[0] + (c2[0] - c1[0]) * frac);
-      const g = Math.round(c1[1] + (c2[1] - c1[1]) * frac);
-      const b = Math.round(c1[2] + (c2[2] - c1[2]) * frac);
-
-      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-      for (let i = 1; i < alphaBuckets; i++) {
-        const cb = colorBatches[i];
-        if (cb.x.length === 0) continue;
-        ctx.globalAlpha = Math.min(1, (i / 100) * 2.2);
+        ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
         ctx.beginPath();
-        for (let j = 0; j < cb.x.length; j++) {
-          const bx = cb.x[j], by = cb.y[j], brx = cb.rx[j], bry = cb.ry[j], brot = cb.rot[j];
-          ctx.moveTo(bx + brx * Math.cos(brot), by + brx * Math.sin(brot));
-          ctx.ellipse(bx, by, brx, bry, brot, 0, Math.PI * 2);
-        }
+        ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
       }
-
-      // Glow pass (kept, but auto-dials down when frames are too slow).
-      if (frameDelta < 32) {
-        ctx.globalAlpha = 0.12;
-        ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        for (let i = 1; i < alphaBuckets; i++) {
-          const cb = colorBatches[i];
-          if (cb.x.length === 0) continue;
-          for (let j = 0; j < cb.x.length; j++) {
-            const bx = cb.x[j], by = cb.y[j], brx = cb.rx[j], bry = cb.ry[j], brot = cb.rot[j];
-            ctx.moveTo(bx + brx * Math.cos(brot), by + brx * Math.sin(brot));
-            ctx.ellipse(bx, by, brx * 1.2, bry * 1.2, brot, 0, Math.PI * 2);
-          }
-        }
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
     }
-    animId = requestAnimationFrame(render);
   }
 
-  resize();
-  const observer = new IntersectionObserver(
+  function tick(now) {
+    if (!running) return;
+
+    if (now < freezeUntil) {
+      animId = requestAnimationFrame(tick);
+      return;
+    }
+
+    const minDelta = 1000 / fpsCap;
+    const deltaMs = lastFrame ? (now - lastFrame) : minDelta;
+    if (deltaMs < minDelta) {
+      animId = requestAnimationFrame(tick);
+      return;
+    }
+    lastFrame = now;
+
+    const dt = clamp(deltaMs / (1000 / 60), 0.6, 2.2);
+    drawFrame(dt);
+
+    animId = requestAnimationFrame(tick);
+  }
+
+  const visibilityObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         isVisible = entry.isIntersecting;
-        if (isVisible) {
-          startAnimation();
-        } else {
-          stopAnimation();
-        }
+        if (isVisible) start();
+        else stop();
       });
     },
-    { threshold: 0.1 }
+    { root: null, threshold: 0.08 }
   );
-  observer.observe(hero);
+  visibilityObserver.observe(heroEl);
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      stopAnimation();
+  requestAnimationFrame(() => {
+    resize();
+    if (prefersReducedMotion) {
+      drawFrame(1);
+      stop();
       return;
     }
-    if (isVisible) {
-      startAnimation();
-    }
-  });
-
-  const sizeObserver = new ResizeObserver(() => {
-    resize();
-  });
-  sizeObserver.observe(hero);
-
-  hero.addEventListener('mousemove', (event) => {
-    pendingMouseEvent = event;
-  });
-
-  hero.addEventListener('mouseleave', () => {
-    pendingMouseEvent = null;
-    mouse.active = false;
+    start();
   });
 
   window.addEventListener('resize', () => {
-    stopAnimation();
+    stop();
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       resize();
-      if (isVisible) {
-        startAnimation();
-      }
-    }, 250);
+      if (!prefersReducedMotion) start();
+    }, 200);
   });
 
+  // Micro-freeze while scrolling to reduce main-thread contention (no class toggles).
   window.addEventListener('scroll', () => {
     if (!isVisible) return;
-    freezeUntil = performance.now() + 140;
-    hero.classList.add('is-frozen');
-    clearTimeout(heroScrollTimer);
-    heroScrollTimer = setTimeout(() => {
-      hero.classList.remove('is-frozen');
-    }, 260);
+    freezeUntil = performance.now() + 120;
   }, { passive: true });
 }
-
 const sentinelFrame = document.querySelector('.preview-img.is-sentinel')?.closest('.visual-frame');
 const sentinelTemp = document.querySelector('[data-sentinel-temp]');
 const sentinelVibration = document.querySelector('[data-sentinel-vibration]');
