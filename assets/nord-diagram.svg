@@ -1,0 +1,43 @@
+<svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" font-family="Sora, sans-serif" font-size="14" fill="#515151">
+    <style>
+        .box {
+            fill: #f3f3f3;
+            stroke: #d1d1d1;
+            stroke-width: 1;
+            rx: 8;
+        }
+        .label {
+            font-weight: 500;
+            fill: #1f1f1f;
+        }
+        .arrow-line {
+            fill: none;
+            stroke: #707070;
+            stroke-width: 1.5;
+            marker-end: url(#arrowhead);
+        }
+        .arrow-head {
+            fill: #707070;
+        }
+    </style>
+
+    <defs>
+        <marker id="arrowhead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head" />
+        </marker>
+    </defs>
+
+    <!-- Boxes -->
+    <rect x="100" y="70" width="180" height="60" class="box" />
+    <text x="190" y="105" text-anchor="middle" class="label">CSV / Excel Import</text>
+
+    <rect x="380" y="70" width="120" height="60" class="box" />
+    <text x="440" y="105" text-anchor="middle" class="label">Parsing</text>
+
+    <rect x="600" y="70" width="120" height="60" class="box" />
+    <text x="660" y="105" text-anchor="middle" class="label">Data Grid</text>
+
+    <!-- Arrows -->
+    <path d="M 280 100 H 370" class="arrow-line" />
+    <path d="M 500 100 H 590" class="arrow-line" />
+</svg>

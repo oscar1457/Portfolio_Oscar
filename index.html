@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Oscar Quintana - Softwareentwicklung & Datenprodukte</title>
+    <link rel="icon" type="image/png" href="public/Icons%20O.Q/Icon_Broswer.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-enter-overlay" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="container header-grid">
+        <a class="brand brand-oq" href="#top" aria-label="O.Q">
+          <div class="brand-o">
+            <img class="brand-o-img" data-brand-o src="public/Icons%20O.Q/letra-o.png" alt="O" />
+          </div>
+          <span class="brand-sep">.</span>
+          <img class="brand-q-img" src="public/Icons%20O.Q/letra-q.png" alt="Q" />
+        </a>
+        <nav class="nav">
+          <span class="nav-highlight" aria-hidden="true"></span>
+          <a href="#projects" data-i18n="navProjects">Projekte</a>
+          <a href="#news" data-i18n="navNews">Neuigkeiten</a>
+                              <a href="#contact" data-i18n="navContact">Kontakt</a>
+        </nav>
+        <div class="lang-toggle" role="group" aria-label="Language toggle">
+          <button class="lang-btn is-active" type="button" data-lang="de">DE</button>
+          <button class="lang-btn" type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="scroll-track" aria-hidden="true">
+      <div class="scroll-ticks" aria-hidden="true"></div>
+      <span class="scroll-thumb"></span>
+    </div>
+    <div class="quantum-scroll" aria-hidden="true">
+      <div class="quantum-track">
+        <div class="quantum-wave-field"></div>
+        <div class="quantum-node"></div>
+      </div>
+    </div>
+    <canvas id="project-scroll-indicator" class="scroll-orbit-indicator" aria-hidden="true"></canvas>
+    <main id="main-viewport">
+      <section class="hero" id="top">
+        <canvas class="hero-dots" aria-hidden="true"></canvas>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow" data-i18n="heroEyebrow">Software Engineering & Datenprodukte</p>
+            <h1><span data-i18n="heroTitle">Premium-Software für klare Daten, robuste Systeme und präzise Visualisierung</span><span class="hero-dot" aria-hidden="true">.</span></h1>
+            <p class="hero-sub" data-i18n="heroSub">Web- und Desktop-Anwendungen mit Fokus auf Architektur, Performance und nachvollziehbare Ergebnisse.</p>
+            <div class="hero-actions">
+              <a class="btn primary" href="#projects" data-i18n="heroCtaPrimary">Projekte ansehen</a>
+              <a class="btn secondary" href="public/CV/Junior%20Entwickler.pdf" data-i18n="heroCtaSecondary">CV herunterladen</a>
+            </div>
+          </div>
+          <div class="hero-media">
+            <div class="video-frame">
+              <div class="video-overlay" aria-hidden="true"></div>
+              <button class="video-cta" type="button" data-video-toggle>
+                <span class="play-icon"></span>
+                <span class="video-label" data-i18n="videoPlay">Video abspielen</span>
+              </button>
+              <div class="video-fallback" data-video-fallback aria-hidden="true">
+                <div class="pixel-robot" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span class="eye"></span><span></span><span class="eye"></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span class="mouth"></span><span></span><span></span><span></span>
+                  <span></span><span></span><span class="core"></span><span class="core"></span><span class="core"></span><span class="core"></span><span></span><span></span>
+                  <span></span><span></span><span class="core"></span><span></span><span></span><span class="core"></span><span></span><span></span>
+                  <span></span><span></span><span class="arm"></span><span></span><span></span><span class="arm"></span><span></span><span></span>
+                  <span></span><span></span><span></span><span class="leg"></span><span class="leg"></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <p class="video-fallback-text" data-i18n="videoRobotLine">Oscar hat das Video dieser Saison noch nicht hochgeladen.</p>
+              </div>
+              <video class="hero-video" preload="none" aria-hidden="true"></video>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="container">
+          <div class="section-head">
+            <h2 data-i18n="projectsTitle">Ausgewählte Projekte</h2>
+            <p data-i18n="projectsSub">Große, klare Projektsektionen mit Fokus auf Wirkung, Architektur und Stack.</p>
+          </div>
+
+          
+          <article class="project">
+            <div class="project-index">01</div>
+            <div class="project-body">
+              <div class="project-header">
+                <h3>Industrial Sentinel - IoT Monitoring System</h3>
+                <span class="project-tag" data-i18n="tagEngineering">Engineering</span>
+              </div>
+              <p data-i18n="sentinelDesc">Echtzeit-Monitoring für industrielle Maschinen mit sensorgesteuerter Telemetrie, MVVM-Architektur und 60 FPS-Visualisierung.</p>
+              <div class="project-visual">
+                <div class="visual-frame has-image">
+                  <img src="public/IMG_3358.jpg.jpeg" alt="Industrial Sentinel preview" class="preview-img is-sentinel" />
+                  <div class="sentinel-overlay" aria-hidden="true">
+                    <img src="public/puffin_3358132.png" alt="" class="sentinel-logo" />
+                    <div class="sentinel-readout">
+                      <span>Temp</span>
+                      <strong data-sentinel-temp>--.-°C</strong>
+                      <span>Vibration</span>
+                      <strong data-sentinel-vibration>--.-- g</strong>
+                      <span>Position</span>
+                      <strong data-sentinel-position>--.-- mm</strong>
+                      <span>RPM</span>
+                      <strong data-sentinel-rpm>----</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-meta">
+                <div>
+                  <div class="meta-label" data-i18n="metaRole">Rolle</div>
+                  <div data-i18n="sentinelRole">Architektur, Multi-Threading, Datenpipeline, UI</div>
+                </div>
+                <div>
+                  <div class="meta-label" data-i18n="metaStack">Stack</div>
+                  <div>C# / .NET 8 / WPF / SQLite / LiveCharts</div>
+                </div>
+                <div>
+                  <div class="meta-label" data-i18n="metaFocus">Fokus</div>
+                  <div data-i18n="sentinelFocus">Robustheit, niedrige Latenz, Testbarkeit</div>
+                </div>
+              </div>
+              <div class="project-actions">
+                <a class="btn tertiary" href="#case-sentinel" data-i18n="projectCta">Case Study</a>
+                <button class="btn ghost sentinel-modal-open" type="button" data-sentinel-open data-i18n="projectMore">Mehr erfahren</button>
+              <a class="btn ghost" href="https://github.com/oscar1457/Industrial-Sentinel" data-i18n="projectLink" target="_blank" rel="noreferrer">GitHub / Demo</a>
+              </div>
+            </div>
+          </article>
+        <article class="project">
+            <div class="project-index">02</div>
+            <div class="project-body">
+              <div class="project-header">
+                <h3>Nordbund Suite - Data Viewer</h3>
+                <span class="project-tag" data-i18n="tagDesktop">Desktop</span>
+              </div>
+              <p data-i18n="nordDesc">Desktop-App zur Analyse von CSV- und Excel-Daten mit Dashboards, Tabellen und klarer Visualisierung.</p>
+              <div class="project-visual">
+                <div class="visual-frame has-gallery">
+                  <div class="preview-stack" aria-hidden="true">
+                    <img src="public/NordBundimg.jpeg" alt="" class="preview-slide" />
+                    <img src="public/Gemini_Generated_Image_bk862vbk862vbk86.png" alt="" class="preview-slide" />
+                    <div class="nord-icon-stack" aria-hidden="true">
+                      <svg viewBox="0 0 40 40" aria-hidden="true">
+                        <circle cx="20" cy="20" r="18" stroke="black" stroke-width="0.5" fill="none" opacity="0.1"/>
+                        <line class="radar-sweep" x1="20" y1="20" x2="20" y2="2" />
+                        <circle class="radar-dot" cx="12" cy="15" r="2" style="animation-delay: 0.5s"/>
+                        <circle class="radar-dot" cx="28" cy="25" r="1.5" style="animation-delay: 1.2s"/>
+                      </svg>
+                      <svg viewBox="0 0 40 40" aria-hidden="true">
+                        <rect class="funnel-layer" x="5" y="8" width="30" height="4" rx="2" style="animation-delay: 0s"/>
+                        <rect class="funnel-layer" x="10" y="16" width="20" height="4" rx="2" style="animation-delay: 0.2s"/>
+                        <rect class="funnel-layer" x="15" y="24" width="10" height="4" rx="2" style="animation-delay: 0.4s"/>
+                      </svg>
+                      <svg viewBox="0 0 40 40" aria-hidden="true">
+                        <circle class="bubble" cx="15" cy="15" r="6" style="animation-delay: 0s"/>
+                        <circle class="bubble" cx="28" cy="22" r="4" style="animation-delay: 0.5s"/>
+                        <circle class="bubble" cx="18" cy="30" r="3" style="animation-delay: 1s"/>
+                      </svg>
+                      <svg viewBox="0 0 40 40" aria-hidden="true">
+                        <circle class="grid-dot" cx="10" cy="10" r="2" style="animation-delay: 0.1s"/>
+                        <circle class="grid-dot" cx="20" cy="10" r="2" style="animation-delay: 0.2s"/>
+                        <circle class="grid-dot" cx="30" cy="10" r="2" style="animation-delay: 0.3s"/>
+                        <circle class="grid-dot" cx="10" cy="20" r="2" style="animation-delay: 0.4s"/>
+                        <circle class="grid-dot" cx="20" cy="20" r="2" style="animation-delay: 0.5s"/>
+                        <circle class="grid-dot" cx="30" cy="20" r="2" style="animation-delay: 0.6s"/>
+                        <circle class="grid-dot" cx="10" cy="30" r="2" style="animation-delay: 0.7s"/>
+                        <circle class="grid-dot" cx="20" cy="30" r="2" style="animation-delay: 0.8s"/>
+                        <circle class="grid-dot" cx="30" cy="30" r="2" style="animation-delay: 0.9s"/>
+                      </svg>
+                      <svg viewBox="0 0 40 40" aria-hidden="true">
+                        <circle class="core-pulse" cx="20" cy="20" r="2"/>
+                        <circle cx="20" cy="20" r="2.5" fill="black"/>
+                        <path class="orbit-ring orbit-1" d="M20 5 A15 15 0 1 1 20 35" stroke-dasharray="2 4"/>
+                        <path class="orbit-ring orbit-2" d="M5 20 A15 15 0 1 0 35 20" stroke-dasharray="1 3"/>
+                        <circle class="orbit-1" cx="20" cy="5" r="2.5" fill="black"/>
+                        <circle class="orbit-2" cx="5" cy="20" r="1.5" fill="black"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-meta">
+                <div>
+                  <div class="meta-label" data-i18n="metaRole">Rolle</div>
+                  <div data-i18n="nordRole">Produktkonzept, Daten-UX, Entwicklung</div>
+                </div>
+                <div>
+                  <div class="meta-label" data-i18n="metaStack">Stack</div>
+                  <div>Tauri / Rust / React / TypeScript / Tailwind / Recharts</div>
+                </div>
+                <div>
+                  <div class="meta-label" data-i18n="metaFocus">Fokus</div>
+                  <div data-i18n="nordFocus">Datenaufbereitung, Übersichtlichkeit, Performance</div>
+                </div>
+              </div>
+              <div class="project-actions">
+                <a class="btn tertiary" href="#case-nordbund" data-i18n="projectCta">Case Study</a>
+              <button class="btn ghost nordbund-modal-open" type="button" data-i18n="projectMore">Mehr erfahren</button>
+              <a class="btn ghost" href="https://github.com/oscar1457/NordBund-Suite" data-i18n="projectLink" target="_blank" rel="noreferrer">GitHub / Demo</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-index">03</div>
+            <div class="project-body">
+              <div class="project-header">
+                <h3>Kovo - Premium Mountain Boots</h3>
+                <span class="project-tag" data-i18n="tagWeb">Web</span>
+              </div>
+              <p data-i18n="kovoDesc">E-Commerce-Seite für eine Premium-Boots-Marke mit Fokus auf Produktstory, Klarheit und Performance.</p>
+              <div class="project-visual">
+                <div class="visual-frame has-tag">
+                  <img src="public/2.png" alt="Kovo preview" class="preview-img is-kovo" />
+                  <span class="corner-label">KOVO</span>
+                  <div class="tag-overlay" aria-hidden="true">
+                    <span class="tag-chip">Crafted</span>
+                    <span class="tag-chip">Alpine</span>
+                    <span class="tag-chip">Durable</span>
+                  </div>
+                </div>
+              </div>
+              <div class="project-meta">
+                <div>
+                  <div class="meta-label" data-i18n="metaRole">Rolle</div>
+                  <div data-i18n="kovoRole">Konzeption, Designsystem, Frontend-Entwicklung</div>
+                </div>
+                <div>
+                  <div class="meta-label" data-i18n="metaStack">Stack</div>
+                  <div>HTML / CSS / JavaScript / Vite</div>
+                </div>
+                <div>
+                  <div class="meta-label" data-i18n="metaFocus">Fokus</div>
+                  <div data-i18n="kovoFocus">UX, visuelle Hierarchie, schnelle Ladezeiten</div>
+                </div>
+              </div>
+              <div class="project-actions">
+                <a class="btn tertiary" href="#case-kovo" data-i18n="projectCta">Case Study</a>
+              <a class="btn ghost" href="https://github.com/oscar1457/KOVO" data-i18n="projectLink" target="_blank" rel="noreferrer">GitHub / Demo</a>
+              </div>
+            </div>
+          </article>
+
+          
+        </div>
+      </section>
+
+      <section class="section" id="case-studies">
+        <div class="container">
+          <div class="section-head">
+            <h2 data-i18n="caseTitle">Case Studies</h2>
+            <p data-i18n="caseSub">Vertiefte Einblicke in Rolle, Entscheidungen und Ergebnisse.</p>
+          </div>
+
+          
+          <div class="case-list">
+            <article class="case" id="case-kovo">
+              <div class="case-body has-map">
+                <div class="case-header">
+                  <h3><span class="case-number">01</span>Kovo - Premium Mountain Boots</h3>
+                  <span class="project-tag" data-i18n="tagWeb">Web</span>
+                </div>
+                <p class="case-summary" data-i18n="kovoCaseSummary">Premium-Brand-Website mit klarer Produktstory und starker visueller Hierarchie.</p>
+
+                <div class="case-extras">
+                  <div class="case-extra no-scroll">
+                    <div class="extra-front">
+                      <div class="extra-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 6.5c0-1.1.9-2 2-2h4.2c.6 0 1.1.2 1.5.6l1 1c.3.3.7.4 1.1.4H19c1.1 0 2 .9 2 2v7.5c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V6.5z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                      <div class="extra-title" data-i18n="extraFolderTitle">Folder Structure</div>
+                      <div class="extra-sub" data-i18n="extraFolderHint">Hover to view</div>
+                    </div>
+                    <div class="extra-body">
+                      <div class="tree-layout">
+                        <pre class="tree">
+<span class="tree-root">Kovo/</span>
+<span class="tree-line blue">|--</span> public/
+<span class="tree-line yellow">|--</span> src/
+<span class="tree-line red indent-1">|  |--</span> main.js
+<span class="tree-line green indent-1">|  |--</span> style.css
+<span class="tree-line blue">|--</span> Video/
+                        </pre>
+                        <pre class="terminal-output">
+$ npm install
+$ npm run build
+vite v5.x
+✓ built in 0.62s
+dist/...
+✔ deploy: vercel
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="case-extra">
+                    <div class="extra-front">
+                      <div class="extra-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 12c0-1.1.9-2 2-2h1.2l.8-2.2c.2-.6.8-1 1.4-1h2.2c.6 0 1.2.4 1.4 1l.8 2.2H15c1.1 0 2 .9 2 2v.5l1.9 1.1c.7.4 1.1 1.2 1.1 2v1.4c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.4c0-.8.4-1.6 1.1-2L7 12.5V12z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                      <div class="extra-title" data-i18n="extraCodeTitle">Technical Fix</div>
+                      <div class="extra-sub" data-i18n="extraCodeHint">Hover for details</div>
+                    </div>
+                    <div class="extra-body">
+                      <div class="extra-issue">
+                        <span data-i18n="kovoChallenge">Problem: Parallax + UI states caused jank on scroll.</span>
+                        <span class="playground" data-playground="js">
+                          <button class="playground-open play-icon-mini" type="button" aria-label="Play playground"></button>
+                          <textarea class="playground-source" hidden>let scrolled = 120;
+  const winHeight = 800;
+  const heroText = { style: { transform: '' } };
+  
+  function updatePerformanceLoop() {
+  if (heroText && scrolled &lt; winHeight) {
+    const yPos = scrolled * 0.4;
+    heroText.style.transform = `translate3d(0, ${yPos}px, 0)`;
+  }
+  return heroText.style.transform;
+}
+  
+  console.log(updatePerformanceLoop());</textarea>
+                        </span>
+                      </div>
+                      <pre class="code-block"><code><span class="tok-key">function</span> <span class="tok-fn">updatePerformanceLoop</span>() {
+  <span class="tok-var">scrolled</span> = <span class="tok-obj">window</span>.<span class="tok-prop">scrollY</span>;
+  <span class="tok-key">if</span> (<span class="tok-var">heroText</span> && <span class="tok-var">scrolled</span> &lt; <span class="tok-var">winHeight</span>) {
+    <span class="tok-key">const</span> <span class="tok-var">yPos</span> = <span class="tok-var">scrolled</span> * <span class="tok-num">0.4</span>;
+    <span class="tok-var">heroText</span>.<span class="tok-prop">style</span>.<span class="tok-prop">transform</span> = <span class="tok-str">`translate3d(0, ${yPos}px, 0)`</span>;
+  }
+  <span class="tok-fn">requestAnimationFrame</span>(<span class="tok-fn">updatePerformanceLoop</span>);
+}</code></pre>
+                      <div class="extra-solution" data-i18n="kovoSolution">Solution: single rAF loop to batch UI updates and avoid layout thrash.</div>
+                    </div>
+                    </div>
+                  </div>
+
+                <div class="case-grid">
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseRole">Rolle</div>
+                    <div data-i18n="kovoCaseRole">Konzeption, Designsystem, Frontend-Entwicklung</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseDecisions">Entscheidungen</div>
+                    <div data-i18n="kovoCaseDecisions">Modulares Layout, klare CTA-F?hrung, performanceorientiertes Styling</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseResult">Ergebnis</div>
+                    <div data-i18n="kovoCaseResult">Konsistentes Markenbild, klare Produktkommunikation, schnelle Interaktion</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseStack">Stack</div>
+                    <div>HTML / CSS / JavaScript / Vite</div>
+                    <div class="stack-icons" aria-hidden="true">
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/html5/000000" alt="HTML5" /></span>
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/css/000000" alt="CSS3" /></span>
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/javascript/000000" alt="JavaScript" /></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="case" id="case-nordbund">
+              <div class="case-body has-map">
+                <div class="case-header">
+                  <h3><span class="case-number">02</span>Nordbund Suite - Data Viewer</h3>
+                  <span class="project-tag" data-i18n="tagDesktop">Desktop</span>
+                </div>
+                <p class="case-summary" data-i18n="nordCaseSummary">Desktop-App f?r strukturierte Datenanalyse mit Dashboards, Tabellen und schneller Navigation.</p>
+
+                <div class="case-extras">
+                  <div class="case-extra">
+                    <div class="extra-front">
+                      <div class="extra-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 6.5c0-1.1.9-2 2-2h4.2c.6 0 1.1.2 1.5.6l1 1c.3.3.7.4 1.1.4H19c1.1 0 2 .9 2 2v7.5c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V6.5z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                      <div class="extra-title" data-i18n="extraFolderTitle">Folder Structure</div>
+                      <div class="extra-sub" data-i18n="extraFolderHint">Hover to view</div>
+                    </div>
+                    <div class="extra-body">
+                      <div class="tree-layout">
+                        <pre class="tree">
+<span class="tree-root">NordBund-Suite/</span>
+<span class="tree-line blue">|--</span> components/
+<span class="tree-line yellow">|--</span> hooks/
+<span class="tree-line red">|--</span> services/
+<span class="tree-line green">|--</span> utils/
+<span class="tree-line blue">|--</span> public/
+<span class="tree-line yellow">|--</span> src-tauri/
+<span class="tree-line red indent-1">|  |--</span> src/main.rs
+                        </pre>
+                        <pre class="terminal-output">
+$ pnpm tauri build
+cargo build --release
+✓ frontend ok
+✓ backend ok
+artifact: app.msi
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="case-extra">
+                    <div class="extra-front">
+                      <div class="extra-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 12c0-1.1.9-2 2-2h1.2l.8-2.2c.2-.6.8-1 1.4-1h2.2c.6 0 1.2.4 1.4 1l.8 2.2H15c1.1 0 2 .9 2 2v.5l1.9 1.1c.7.4 1.1 1.2 1.1 2v1.4c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.4c0-.8.4-1.6 1.1-2L7 12.5V12z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                      <div class="extra-title" data-i18n="extraCodeTitle">Technical Fix</div>
+                      <div class="extra-sub" data-i18n="extraCodeHint">Hover for details</div>
+                    </div>
+                    <div class="extra-body">
+                      <div class="extra-issue">
+                        <span data-i18n="nordChallenge">Problem: splash screen could hang if frontend load was slow.</span>
+                        <span class="playground" data-playground="js">
+                          <button class="playground-open play-icon-mini" type="button" aria-label="Play playground"></button>
+                          <textarea class="playground-source" hidden>const maxDelay = 2000;
+const readyIn = 600;
+const remaining = Math.max(0, maxDelay - readyIn);
+
+console.log('boot: wait ' + remaining + 'ms to keep splash smooth');
+console.log('splash hidden: true');</textarea>
+                        </span>
+                      </div>
+                        <pre class="code-block"><code><span class="tok-key">let</span> <span class="tok-var">start_time</span> = <span class="tok-obj">Instant</span>::<span class="tok-fn">now</span>();
+  <span class="tok-var">main_window</span>.<span class="tok-fn">listen</span>(<span class="tok-str">"react-ready"</span>, <span class="tok-key">move</span> |_| {
+    <span class="tok-key">let</span> <span class="tok-var">elapsed</span> = <span class="tok-var">start_time</span>.<span class="tok-fn">elapsed</span>();
+    <span class="tok-key">if</span> <span class="tok-var">elapsed</span> &lt; <span class="tok-obj">Duration</span>::<span class="tok-fn">from_secs</span>(<span class="tok-num">2</span>) {
+      <span class="tok-fn">thread</span>::<span class="tok-fn">spawn</span>(<span class="tok-key">move</span> || { <span class="tok-fn">sleep</span>(<span class="tok-var">remaining</span>); });
+    }
+  });</code></pre>
+                        <div class="extra-solution" data-i18n="nordSolution">Solution: timed fallback + async close to guarantee UI unlock.</div>
+                    </div>
+                    </div>
+                    </div>
+
+                  <div class="case-grid">
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseRole">Rolle</div>
+                    <div data-i18n="nordCaseRole">Produktkonzept, Daten-UX, Entwicklung</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseDecisions">Entscheidungen</div>
+                    <div data-i18n="nordCaseDecisions">Import-Pipeline f?r CSV/Excel, konfigurierbare Layouts, klare Datenhierarchie</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseResult">Ergebnis</div>
+                    <div data-i18n="nordCaseResult">Schneller Datenzugriff, ?bersichtliche Visualisierung, stabile Desktop-Performance</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseStack">Stack</div>
+                    <div>Tauri / Rust / React / TypeScript / Tailwind / Recharts</div>
+                    <div class="stack-icons" aria-hidden="true">
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/rust/000000" alt="Rust" /></span>
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/typescript/000000" alt="TypeScript" /></span>
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/react/000000" alt="React" /></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="concept-map-trigger">
+                  <button class="btn ghost concept-map-open" type="button" data-map-target="nordbund" data-i18n="mapOpen">Open concept map</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="case" id="case-sentinel">
+              <div class="case-body has-map">
+                <div class="case-header">
+                  <h3><span class="case-number">03</span>Industrial Sentinel - IoT Monitoring System</h3>
+                  <span class="project-tag" data-i18n="tagEngineering">Engineering</span>
+                </div>
+                <p class="case-summary" data-i18n="sentinelCaseSummary">Echtzeit-Monitoring mit Sensor-Simulation, MVVM-Architektur und stabiler Visualisierung.</p>
+
+                <div class="case-extras">
+                  <div class="case-extra">
+                    <div class="extra-front">
+                      <div class="extra-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 6.5c0-1.1.9-2 2-2h4.2c.6 0 1.1.2 1.5.6l1 1c.3.3.7.4 1.1.4H19c1.1 0 2 .9 2 2v7.5c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V6.5z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                      <div class="extra-title" data-i18n="extraFolderTitle">Folder Structure</div>
+                      <div class="extra-sub" data-i18n="extraFolderHint">Hover to view</div>
+                    </div>
+                    <div class="extra-body">
+                      <div class="tree-layout">
+                        <pre class="tree">
+<span class="tree-root">Industrial Sentinel/</span>
+<span class="tree-line blue">|--</span> src/
+<span class="tree-line yellow indent-1">|  |--</span> IndustrialSentinel.App/
+<span class="tree-line red indent-1">|  |--</span> IndustrialSentinel.Core/
+<span class="tree-line green indent-1">|  |--</span> IndustrialSentinel.Infrastructure/
+<span class="tree-line blue">|--</span> tests/
+<span class="tree-line yellow">|--</span> tools/
+                        </pre>
+                        <pre class="terminal-output">
+$ dotnet test
+✓ 128 tests
+$ dotnet publish -c Release
+artifact: Sentinel.exe
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="case-extra">
+                    <div class="extra-front">
+                      <div class="extra-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M3 12c0-1.1.9-2 2-2h1.2l.8-2.2c.2-.6.8-1 1.4-1h2.2c.6 0 1.2.4 1.4 1l.8 2.2H15c1.1 0 2 .9 2 2v.5l1.9 1.1c.7.4 1.1 1.2 1.1 2v1.4c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-1.4c0-.8.4-1.6 1.1-2L7 12.5V12z" fill="currentColor"/>
+                        </svg>
+                      </div>
+                      <div class="extra-title" data-i18n="extraCodeTitle">Technical Fix</div>
+                      <div class="extra-sub" data-i18n="extraCodeHint">Hover for details</div>
+                    </div>
+                    <div class="extra-body">
+                      <div class="extra-issue">
+                        <span data-i18n="sentinelChallenge">Problem: queue overflow under high ingest rate.</span>
+                        <span class="playground" data-playground="js">
+                          <button class="playground-open play-icon-mini" type="button" aria-label="Play playground"></button>
+                          <textarea class="playground-source" hidden>const capacity = 3;
+const samples = ['A', 'B', 'C', 'D', 'E'];
+const queue = [];
+let dropped = 0;
+
+samples.forEach((sample) =&gt; {
+  if (queue.length &gt;= capacity) {
+    dropped += 1;
+  } else {
+    queue.push(sample);
+  }
+});
+
+console.log('queued: ' + queue.length);
+console.log('dropped: ' + dropped);</textarea>
+                        </span>
+                      </div>
+                        <pre class="code-block"><code><span class="tok-key">if</span> (!<span class="tok-var">_rawQueue</span>.<span class="tok-fn">TryAdd</span>(<span class="tok-var">sample</span>, <span class="tok-num">5</span>, <span class="tok-var">token</span>)) {
+    <span class="tok-obj">Interlocked</span>.<span class="tok-fn">Increment</span>(<span class="tok-key">ref</span> <span class="tok-var">_droppedSamples</span>);
+  }
+  <span class="tok-key">var</span> <span class="tok-var">sleepTicks</span> = <span class="tok-var">nextTick</span> - <span class="tok-obj">Stopwatch</span>.<span class="tok-fn">GetTimestamp</span>();
+  <span class="tok-key">if</span> (<span class="tok-var">sleepTicks</span> &gt; <span class="tok-num">0</span>) <span class="tok-obj">Thread</span>.<span class="tok-fn">Sleep</span>(<span class="tok-var">delay</span>);
+  </code></pre>
+                        <div class="extra-solution" data-i18n="sentinelSolution">Solution: bounded queues + drop counter + fixed-rate loop.</div>
+                    </div>
+                    </div>
+                    </div>
+
+                  <div class="case-grid">
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseRole">Rolle</div>
+                    <div data-i18n="sentinelCaseRole">Architektur, Multi-Threading, Datenpipeline, UI</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseDecisions">Entscheidungen</div>
+                    <div data-i18n="sentinelCaseDecisions">MVVM-Trennung, SQLite-Historie, 60 FPS Charts, Unit Tests</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseResult">Ergebnis</div>
+                    <div data-i18n="sentinelCaseResult">Niedrige Latenz, stabile Darstellung, robuste Logik</div>
+                  </div>
+                  <div class="case-card">
+                    <div class="meta-label" data-i18n="caseStack">Stack</div>
+                    <div>C# / .NET 8 / WPF / SQLite / LiveCharts</div>
+                    <div class="stack-icons" aria-hidden="true">
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-line.svg" alt="C#" /></span>
+                      <span class="stack-icon"><img class="stack-logo" src="https://cdn.simpleicons.org/dotnet/000000" alt=".NET" /></span>
+                      <span class="stack-icon"><svg class="stack-logo" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="9" height="9" fill="currentColor" /><rect x="13" y="2" width="9" height="9" fill="currentColor" /><rect x="2" y="13" width="9" height="9" fill="currentColor" /><rect x="13" y="13" width="9" height="9" fill="currentColor" /></svg></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="concept-map-trigger">
+                  <button class="btn ghost concept-map-open" type="button" data-map-target="sentinel" data-i18n="mapOpen">Open concept map</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section stack-carousel" aria-label="Stack carousel">
+        <div class="container">
+          <div class="carousel-viewport" aria-hidden="true">
+            <div class="carousel-track">
+              <div class="carousel-row">
+                <img src="https://cdn.simpleicons.org/html5" alt="HTML5" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" />
+                <img src="https://cdn.simpleicons.org/javascript" alt="JavaScript" />
+                <img src="https://cdn.simpleicons.org/typescript" alt="TypeScript" />
+                <img src="https://cdn.simpleicons.org/react" alt="React" />
+                <img src="https://cdn.simpleicons.org/vite" alt="Vite" />
+                <img src="https://cdn.simpleicons.org/vercel" alt="Vercel" />
+                <img src="https://cdn.simpleicons.org/github" alt="GitHub" />
+                <img src="https://cdn.simpleicons.org/rust" alt="Rust" />
+                <img src="https://cdn.simpleicons.org/tauri" alt="Tauri" />
+                <img src="https://cdn.simpleicons.org/sqlite" alt="SQLite" />
+                <img src="https://cdn.simpleicons.org/python" alt="Python" />
+                <img src="https://cdn.simpleicons.org/pandas" alt="Pandas" />
+                <img src="https://cdn.simpleicons.org/jupyter" alt="Jupyter" />
+                <img src="https://cdn.simpleicons.org/figma" alt="Figma" />
+                <img src="https://cdn.simpleicons.org/c" alt="C" />
+                <img src="https://cdn.simpleicons.org/cplusplus" alt="C++" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" />
+                <img src="https://cdn.simpleicons.org/dotnet" alt=".NET" />
+                <img src="https://cdn.simpleicons.org/postgresql" alt="PostgreSQL" />
+                <img src="https://cdn.simpleicons.org/mysql" alt="MySQL" />
+                <img src="https://cdn.simpleicons.org/docker" alt="Docker" />
+                <img src="https://cdn.simpleicons.org/git" alt="Git" />
+                <img src="https://cdn.simpleicons.org/npm" alt="npm" />
+              </div>
+              <div class="carousel-row" aria-hidden="true">
+                <img src="https://cdn.simpleicons.org/html5" alt="HTML5" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" />
+                <img src="https://cdn.simpleicons.org/javascript" alt="JavaScript" />
+                <img src="https://cdn.simpleicons.org/typescript" alt="TypeScript" />
+                <img src="https://cdn.simpleicons.org/react" alt="React" />
+                <img src="https://cdn.simpleicons.org/vite" alt="Vite" />
+                <img src="https://cdn.simpleicons.org/vercel" alt="Vercel" />
+                <img src="https://cdn.simpleicons.org/github" alt="GitHub" />
+                <img src="https://cdn.simpleicons.org/rust" alt="Rust" />
+                <img src="https://cdn.simpleicons.org/tauri" alt="Tauri" />
+                <img src="https://cdn.simpleicons.org/sqlite" alt="SQLite" />
+                <img src="https://cdn.simpleicons.org/python" alt="Python" />
+                <img src="https://cdn.simpleicons.org/pandas" alt="Pandas" />
+                <img src="https://cdn.simpleicons.org/jupyter" alt="Jupyter" />
+                <img src="https://cdn.simpleicons.org/figma" alt="Figma" />
+                <img src="https://cdn.simpleicons.org/c" alt="C" />
+                <img src="https://cdn.simpleicons.org/cplusplus" alt="C++" />
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#" />
+                <img src="https://cdn.simpleicons.org/dotnet" alt=".NET" />
+                <img src="https://cdn.simpleicons.org/postgresql" alt="PostgreSQL" />
+                <img src="https://cdn.simpleicons.org/mysql" alt="MySQL" />
+                <img src="https://cdn.simpleicons.org/docker" alt="Docker" />
+                <img src="https://cdn.simpleicons.org/git" alt="Git" />
+                <img src="https://cdn.simpleicons.org/npm" alt="npm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="news">
+        <div class="container">
+          <div class="section-head">
+            <h2 data-i18n="newsTitle">Neuigkeiten</h2>
+            <p data-i18n="newsSub">Aktuelle Entwicklungen und Projekte in Arbeit.</p>
+          </div>
+
+          <div class="news-flip">
+            <article class="news-card news-front">
+              <div class="news-icon">
+                <img src="public/Icons%20O.Q/letra-s%20(2).png" alt="SAKO OS" />
+              </div>
+              <div class="news-body">
+                <div class="news-meta">
+                  <span class="news-tag" data-i18n="newsStatus">In Entwicklung</span>
+                  <span class="news-license">Apache 2.0</span>
+                </div>
+                <h3 data-i18n="newsHeadline">SAKO OS</h3>
+                <p data-i18n="newsDesc">Betriebssystem mit automatischer Personalisierung der Oberfläche und Funktionen – angepasst an Beruf und Arbeitsstil (z. B. Architektur, Management, Programmierung, Office, Finance, Gaming).</p>
+                <div class="news-badges">
+                  <span data-i18n="newsBadgeAdaptive">Adaptive UI</span>
+                  <span data-i18n="newsBadgeProfiles">Berufsprofile</span>
+                  <span data-i18n="newsBadgeAutomation">Automation</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="news-card news-back">
+              <div class="news-icon">
+                <img src="https://cdn.simpleicons.org/github" alt="Open Source" />
+              </div>
+              <div class="news-body">
+                <div class="news-meta">
+                  <span class="news-tag" data-i18n="newsOsTag">Open Source</span>
+                </div>
+                <h3 data-i18n="newsOsTitle">Community Contribution</h3>
+                <p data-i18n="newsOsDesc">Beiträge zu einem Open-Source-Projekt: Issues, Code-Review und kleine Features. Projektname wird ergänzt.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="message-callout" aria-label="Contact hint">
+        <div class="callout">
+          <div class="callout-icon" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+          <div class="callout-text">
+            <div class="callout-title" data-i18n="calloutTitle">Nachricht senden</div>
+            <div class="callout-sub" data-i18n="calloutSub">Direkter Kontakt steht gleich unten bereit.</div>
+          </div>
+          <div class="callout-arrow" aria-hidden="true">↓</div>
+        </div>
+      </div>
+
+      <section class="section" id="contact">
+        <div class="container contact-grid">
+          <div>
+            <h2 data-i18n="contactTitle">Kontakt</h2>
+            <p data-i18n="contactSub">Direkter Kontakt ohne Formular. Nachricht per E-Mail.</p>
+          </div>
+          <div class="contact-card">
+            <div class="contact-label" data-i18n="contactLabel">E-Mail</div>
+            <a class="contact-email" href="mailto:oscarquintana2125@gmail.com">oscarquintana2125@gmail.com</a>
+            <div class="contact-social" aria-label="Social links">
+              <a class="social-link" href="https://www.linkedin.com/in/oscar-quintana-b3b49b386/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a class="social-link" href="https://github.com/oscar1457" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+            <div class="contact-actions">
+              <button class="btn primary" type="button" data-copy-email data-i18n="contactCopy">E-Mail kopieren</button>
+              <a class="btn secondary" href="public/CV/Junior%20Entwickler.pdf" data-i18n="contactCv">CV herunterladen</a>
+            </div>
+            <div class="contact-note" data-i18n="contactNote">Formular folgt in einer späteren Version.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">Oscar Quintana<span class="signature">.</span></div>
+        <div>Hannover / Deutschland</div>
+        <div>(c) 2026</div>
+      </div>
+    </footer>
+
+    <div class="playground-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="playground-modal-title">
+      <div class="playground-modal-backdrop" data-playground-close></div>
+      <div class="playground-modal-card" role="document">
+        <div class="playground-modal-head">
+          <div class="playground-modal-title" id="playground-modal-title" data-i18n="playgroundTitle">Mini playground</div>
+          <button class="btn ghost playground-close" type="button" data-playground-close data-i18n="playgroundClose">Close</button>
+        </div>
+        <div class="playground-modal-body">
+          <textarea class="playground-modal-input" spellcheck="false"></textarea>
+          <div class="playground-modal-actions">
+            <button class="btn ghost playground-modal-run" type="button" data-i18n="playgroundRun">Run</button>
+            <button class="btn ghost playground-modal-reset" type="button" data-i18n="playgroundReset">Reset</button>
+          </div>
+          <pre class="playground-modal-output" aria-live="polite"></pre>
+        </div>
+      </div>
+    </div>
+    <div class="concept-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="concept-modal-title">
+      <div class="concept-modal-backdrop" data-concept-close></div>
+      <div class="concept-modal-card" role="document">
+        <div class="concept-modal-head">
+          <div class="concept-modal-title" id="concept-modal-title" data-i18n="mapTitle">Concept Map</div>
+          <button class="btn ghost concept-modal-close" type="button" data-concept-close data-i18n="mapClose">Close</button>
+        </div>
+        <div class="concept-modal-body">
+          <div class="concept-canvas" data-concept-modal-body></div>
+        </div>
+      </div>
+    </div>
+    <div class="nordbund-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="nordbund-modal-title">
+      <div class="nordbund-modal-backdrop" data-nordbund-close></div>
+      <div class="nordbund-modal-card" role="document">
+        <div class="nordbund-modal-head">
+          <div class="nordbund-modal-title" id="nordbund-modal-title">Nordbund Suite</div>
+          <button class="btn ghost" type="button" data-nordbund-close data-i18n="mapClose">Close</button>
+        </div>
+        <div class="nordbund-modal-body">
+          <iframe class="nordbund-modal-frame" data-src="nordbund.html" title="Nordbund Suite" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="sentinel-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sentinel-modal-title">
+      <div class="sentinel-modal-backdrop" data-sentinel-close></div>
+      <div class="sentinel-modal-card" role="document">
+        <div class="sentinel-modal-head">
+          <div class="sentinel-modal-title" id="sentinel-modal-title">Industrial Sentinel</div>
+          <button class="btn ghost" type="button" data-sentinel-close data-i18n="mapClose">Close</button>
+        </div>
+        <div class="sentinel-modal-body">
+          <iframe class="sentinel-modal-frame" data-src="sentinel.html" title="Industrial Sentinel" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+    <template id="concept-map-nordbund">
+      <div class="concept-map">
+        <div class="concept-root">
+          <div class="concept-node is-root" data-i18n="mapNordRoot">Nordbund Suite</div>
+        </div>
+        <div class="concept-tree">
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapNordPhaseImport">Phase: Import</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordImportA">CSV/Excel laden</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordImportB">Header pruefen</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordImportC">Schema Mapping</button>
+            </div>
+          </div>
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapNordPhaseProcessing">Phase: Processing</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordProcessA">Typen erkennen</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordProcessB">Werte bereinigen</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordProcessC">Fehlerreport</button>
+            </div>
+          </div>
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapNordPhaseGrid">Phase: Data Grid</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordGridA">Sortieren/Filtern</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordGridB">Summen/Stats</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapNordGridC">Schnelles Rendering</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template id="concept-map-sentinel">
+      <div class="concept-map">
+        <div class="concept-root">
+          <div class="concept-node is-root" data-i18n="mapSentinelRoot">Industrial Sentinel</div>
+        </div>
+        <div class="concept-tree">
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapSentinelPhaseSensors">Phase: Sensors</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelSensorsA">Sampling</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelSensorsB">Telemetry</button>
+            </div>
+          </div>
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapSentinelPhasePipeline">Phase: Pipeline</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelPipelineA">Buffering</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelPipelineB">Metriken</button>
+            </div>
+          </div>
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapSentinelPhaseMvvm">Phase: MVVM</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelMvvmA">State/Bindings</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelMvvmB">Stabile Updates</button>
+            </div>
+          </div>
+          <div class="concept-branch">
+            <button class="concept-node is-phase" type="button" data-concept-toggle aria-expanded="false" data-i18n="mapSentinelPhaseUi">Phase: UI</button>
+            <div class="concept-children">
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelUiA">Live Charts</button>
+              <button class="concept-node is-sub" type="button" data-i18n="mapSentinelUiB">Alerts</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <script src="script.js"></script>
+  </body>
+</html>
