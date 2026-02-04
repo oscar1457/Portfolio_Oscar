@@ -571,6 +571,11 @@ body.show-quantum-scroll .quantum-scroll {
   isolation: isolate;
 }
 
+.hero--tangent-bg .hero-grid {
+  /* Ensure absolute-positioned hero copy has a stable positioning box. */
+  min-height: calc(100svh - 260px);
+}
+
 .hero--tangent-bg::after {
   content: '';
   position: absolute;
@@ -578,12 +583,12 @@ body.show-quantum-scroll .quantum-scroll {
   pointer-events: none;
   z-index: 0;
   background-repeat: no-repeat;
-  background-position: 62% 48%;
+  background-position: 52% 52%;
   background-size: cover;
   opacity: 1;
   filter: none;
   transform: translate3d(0, 0, 0);
-  background-image: url("public/ChatGPT%20Image%204%20feb%202026%2C%2023_10_07.png");
+  background-image: url("public/Dise%C3%B1o%20sin%20t%C3%ADtulo.png");
 }
 
 .hero--tangent-bg .hero-dots {
@@ -591,46 +596,85 @@ body.show-quantum-scroll .quantum-scroll {
 }
 
 .hero--tangent-bg .hero-copy {
-  position: relative;
+  position: absolute;
   z-index: 1;
-  max-width: 62ch;
-  padding: 28px 28px 26px 36px;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.08);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  left: 50%;
+  top: 66%;
+  transform: translate(-50%, -50%);
+  max-width: 46ch;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .hero--tangent-bg .hero-copy::before {
-  content: '';
-  position: absolute;
-  left: 18px;
-  top: 18px;
-  bottom: 18px;
-  width: 2px;
-  border-radius: 2px;
-  background: rgba(201, 42, 42, 0.34);
+  content: none;
 }
 
 .hero--tangent-bg .eyebrow {
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(245, 245, 245, 0.75);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+
+.hero--tangent-bg h1,
+.hero--tangent-bg .hero-sub {
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.58);
+}
+
+.hero--tangent-bg h1 {
+  color: #f3f3f3;
 }
 
 .hero--tangent-bg .hero-dot {
   animation: none;
-  color: rgba(201, 42, 42, 0.9);
+  color: rgba(245, 245, 245, 0.9);
 }
 
 .hero--tangent-bg .hero-sub {
-  color: rgba(0, 0, 0, 0.62);
+  color: rgba(245, 245, 245, 0.78);
 }
 
 .hero--tangent-bg .hero-copy h1 {
   max-width: 28ch;
   text-wrap: balance;
   letter-spacing: -0.02em;
+}
+
+.hero--tangent-bg .hero-actions .btn {
+  box-shadow: none;
+}
+
+.hero--tangent-bg .hero-actions .btn.primary {
+  background: rgba(245, 245, 245, 0.94);
+  color: #0b0b0b;
+  border: 1px solid rgba(245, 245, 245, 0.4);
+}
+
+.hero--tangent-bg .hero-actions .btn.secondary {
+  background: rgba(0, 0, 0, 0.18);
+  color: rgba(245, 245, 245, 0.92);
+  border: 1px solid rgba(245, 245, 245, 0.28);
+}
+
+.hero--tangent-bg .hero-actions .btn.secondary:hover,
+.hero--tangent-bg .hero-actions .btn.secondary:focus-visible {
+  background: rgba(0, 0, 0, 0.26);
+  color: rgba(245, 245, 245, 0.98);
+  box-shadow: none;
+}
+
+.hero--tangent-bg .hero-actions .btn:hover,
+.hero--tangent-bg .hero-actions .btn:focus-visible {
+  box-shadow: none;
+}
+
+.hero--tangent-bg .hero-actions .btn.primary:hover,
+.hero--tangent-bg .hero-actions .btn.primary:focus-visible {
+  background: rgba(245, 245, 245, 0.98);
+  color: #0b0b0b;
+  box-shadow: none;
 }
 
 .hero-dots {
@@ -3016,23 +3060,20 @@ body.is-scrolling .case-diagram {
 
   .hero--tangent-bg::after {
     inset: 0;
-    background-position: 55% 55%;
+    background-position: 52% 56%;
     background-size: cover;
     opacity: 1;
     filter: none;
   }
 
   .hero--tangent-bg .hero-copy {
-    width: 100%;
-    max-width: none;
-    padding: 22px 18px 20px 28px;
-    border-radius: 22px;
+    left: 50%;
+    top: 72%;
+    max-width: 26ch;
   }
 
-  .hero--tangent-bg .hero-copy::before {
-    left: 14px;
-    top: 14px;
-    bottom: 14px;
+  .hero--tangent-bg .hero-grid {
+    min-height: calc(100svh - 168px);
   }
 
   .hero--tangent-bg .hero-copy h1 {
