@@ -615,11 +615,11 @@ body.show-quantum-scroll .quantum-scroll {
 
 .hero--tangent-bg .hero-mark {
   color: #ff542e;
-  font-size: 22px;
-  font-weight: 600;
+  font-size: clamp(44px, 6.2vw, 72px);
+  font-weight: 700;
   letter-spacing: 0.12em;
   line-height: 1;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
   text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   user-select: none;
 }
@@ -3101,8 +3101,8 @@ body.is-scrolling .case-diagram {
   }
 
   .hero--tangent-bg .hero-mark {
-    font-size: 20px;
-    margin-bottom: 12px;
+    font-size: clamp(36px, 12vw, 64px);
+    margin-bottom: 16px;
   }
 
   .hero--tangent-bg .hero-grid {
