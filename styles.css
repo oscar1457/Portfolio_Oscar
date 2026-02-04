@@ -642,6 +642,11 @@ body.show-quantum-scroll .quantum-scroll {
   letter-spacing: -0.02em;
 }
 
+.hero--tangent-bg .hero-actions {
+  margin-top: 0;
+  justify-content: center;
+}
+
 .hero--tangent-bg .hero-actions .btn {
   box-shadow: none;
 }
