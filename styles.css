@@ -608,6 +608,20 @@ body.show-quantum-scroll .quantum-scroll {
   background: transparent;
   border: none;
   box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero--tangent-bg .hero-mark {
+  color: #ff542e;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  margin-bottom: 14px;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  user-select: none;
 }
 
 .hero--tangent-bg .hero-copy::before {
@@ -3084,6 +3098,11 @@ body.is-scrolling .case-diagram {
     top: 76%;
     width: min(520px, calc(100% - 32px));
     max-width: 520px;
+  }
+
+  .hero--tangent-bg .hero-mark {
+    font-size: 20px;
+    margin-bottom: 12px;
   }
 
   .hero--tangent-bg .hero-grid {
