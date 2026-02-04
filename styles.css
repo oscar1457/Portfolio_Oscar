@@ -546,6 +546,7 @@ body.show-quantum-scroll .quantum-scroll {
 
 .hero {
   padding: 140px 0 120px;
+  min-height: 100svh;
   position: relative;
   overflow: hidden;
   contain: layout paint;
