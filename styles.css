@@ -612,7 +612,7 @@ body.show-quantum-scroll .quantum-scroll {
   opacity: 0.94;
   filter: drop-shadow(0 28px 34px rgba(0, 0, 0, 0.12));
   transform: translate3d(0, 0, 0);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='90%25'%3E%3Cstop offset='0%25' stop-color='%23161616'/%3E%3Cstop offset='55%25' stop-color='%230a0a0a'/%3E%3Cstop offset='100%25' stop-color='%23000000'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23g)' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M260 520H760' stroke-width='220'/%3E%3Cpath d='M820 200V700' stroke-width='220'/%3E%3Cpath d='M820 470H1400' stroke-width='220'/%3E%3Cpath d='M820 610L1040 820' stroke-width='220'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("public/ChatGPT%20Image%204%20feb%202026%2C%2023_10_07.png");
 }
 
 .hero--tangent-bg .hero-dots {
