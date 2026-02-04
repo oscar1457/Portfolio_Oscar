@@ -1095,7 +1095,13 @@ if (nav) {
 
 const hero = document.querySelector('.hero');
 const dotsCanvas = document.querySelector('.hero-dots');
-if (hero && dotsCanvas) {
+const useHeroGradientFlow = window.matchMedia('(max-width: 720px), (hover: none), (pointer: coarse)').matches;
+if (hero && dotsCanvas && useHeroGradientFlow) {
+  hero.classList.add('hero-gradient-flow');
+  dotsCanvas.style.display = 'none';
+}
+
+if (hero && dotsCanvas && !useHeroGradientFlow) {
   const ctx = dotsCanvas.getContext('2d', { alpha: true, desynchronized: true });
   let width = 0;
   let height = 0;
@@ -2449,7 +2455,28 @@ function setupMobileCaseExtras() {
   };
 
   cards.forEach((card) => {
+    let touchMoved = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    card.addEventListener('touchstart', (event) => {
+      if (!event.touches.length) return;
+      touchMoved = false;
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    card.addEventListener('touchmove', (event) => {
+      if (!event.touches.length) return;
+      const dx = Math.abs(event.touches[0].clientX - touchStartX);
+      const dy = Math.abs(event.touches[0].clientY - touchStartY);
+      if (dx > 8 || dy > 8) {
+        touchMoved = true;
+      }
+    }, { passive: true });
+
     card.addEventListener('click', (event) => {
+      if (touchMoved) return;
       const isOpen = card.classList.contains('is-open');
       const interactive = event.target.closest('a, button, input, textarea, select, label');
 
@@ -2460,10 +2487,6 @@ function setupMobileCaseExtras() {
           event.preventDefault();
         }
         return;
-      }
-
-      if (!interactive) {
-        card.classList.remove('is-open');
       }
     });
   });
