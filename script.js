@@ -2312,3 +2312,47 @@ setupLazyFrameModal({
   frameSelector: '.sentinel-modal-frame',
   closeButtonSelector: '.sentinel-modal-head [data-sentinel-close]'
 });
+
+function setupMobileCaseExtras() {
+  const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  if (!isTouchDevice) return;
+
+  const cards = Array.from(document.querySelectorAll('.case-extra'));
+  if (!cards.length) return;
+
+  const closeAll = (except) => {
+    cards.forEach((card) => {
+      if (card !== except) {
+        card.classList.remove('is-open');
+      }
+    });
+  };
+
+  cards.forEach((card) => {
+    card.addEventListener('click', (event) => {
+      const isOpen = card.classList.contains('is-open');
+      const interactive = event.target.closest('a, button, input, textarea, select, label');
+
+      if (!isOpen) {
+        closeAll(card);
+        card.classList.add('is-open');
+        if (interactive) {
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (!interactive) {
+        card.classList.remove('is-open');
+      }
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.case-extra')) {
+      closeAll(null);
+    }
+  });
+}
+
+setupMobileCaseExtras();
