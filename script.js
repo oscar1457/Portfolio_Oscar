@@ -998,6 +998,9 @@ if (siteHeader) {
   const heroSection = document.querySelector('#top');
   if (heroSection) {
     let isCompact = false;
+    const touchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    let baseHeaderHeight = siteHeader.getBoundingClientRect().height || 80;
+
     const setHeaderCompact = (nextCompact) => {
       if (nextCompact === isCompact) return;
       isCompact = nextCompact;
@@ -1005,32 +1008,41 @@ if (siteHeader) {
     };
 
     const syncCompactFromScroll = () => {
-      const headerHeight = siteHeader.offsetHeight || 80;
       const heroBottom = heroSection.getBoundingClientRect().bottom;
-      setHeaderCompact(heroBottom <= headerHeight + 24);
+      const enterThreshold = baseHeaderHeight + 18;
+      const exitThreshold = baseHeaderHeight + 68;
+      if (!isCompact && heroBottom <= enterThreshold) {
+        setHeaderCompact(true);
+        return;
+      }
+      if (isCompact && heroBottom >= exitThreshold) {
+        setHeaderCompact(false);
+      }
     };
 
-    const heroObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const ratio = entry.intersectionRatio;
-          if (!isCompact && ratio < 0.12) {
-            setHeaderCompact(true);
-          } else if (isCompact && ratio > 0.35) {
-            setHeaderCompact(false);
-          }
-        });
-      },
-      { threshold: [0, 0.12, 0.35, 1] }
-    );
-    heroObserver.observe(heroSection);
-
-    const touchFallback = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-    if (touchFallback) {
+    if (touchDevice) {
       window.addEventListener('scroll', syncCompactFromScroll, { passive: true });
-      window.addEventListener('resize', syncCompactFromScroll);
+      window.addEventListener('resize', () => {
+        baseHeaderHeight = Math.max(72, siteHeader.getBoundingClientRect().height || baseHeaderHeight);
+        syncCompactFromScroll();
+      });
       window.addEventListener('load', syncCompactFromScroll, { once: true });
       syncCompactFromScroll();
+    } else {
+      const heroObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const ratio = entry.intersectionRatio;
+            if (!isCompact && ratio < 0.12) {
+              setHeaderCompact(true);
+            } else if (isCompact && ratio > 0.35) {
+              setHeaderCompact(false);
+            }
+          });
+        },
+        { threshold: [0, 0.12, 0.35, 1] }
+      );
+      heroObserver.observe(heroSection);
     }
   }
 }
