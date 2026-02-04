@@ -3008,3 +3008,187 @@ body.is-scrolling .case-diagram {
     stroke-dashoffset: -12;
   }
 }
+
+@media (hover: none), (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    user-select: text;
+  }
+
+  .site-header {
+    border-radius: 0 0 16px 16px;
+  }
+
+  .header-grid {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+  }
+
+  .nav {
+    grid-column: 1 / -1;
+    order: 3;
+    width: 100%;
+    gap: 8px;
+    padding-bottom: 2px;
+  }
+
+  .nav a {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+
+  .lang-toggle {
+    justify-self: end;
+  }
+
+  .site-header.is-compact {
+    background: var(--surface);
+    box-shadow: var(--shadow-outer);
+  }
+
+  .site-header.is-compact .container {
+    width: min(100%, 100% - 32px);
+    display: block;
+    margin: 0 auto;
+  }
+
+  .site-header.is-compact .header-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    width: auto;
+    background: transparent;
+    box-shadow: none;
+    left: auto;
+    transform: none;
+    padding: 10px 0;
+  }
+
+  .site-header.is-compact .nav,
+  .site-header.is-compact .lang-toggle {
+    position: static;
+    opacity: 1;
+    pointer-events: auto;
+    width: auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .site-header.is-compact .brand-oq img {
+    filter: none;
+  }
+
+  .site-header.is-compact .brand-sep {
+    color: var(--ink);
+  }
+
+  .hero {
+    padding: 100px 0 68px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 9vw, 2.6rem);
+  }
+
+  .hero-sub {
+    max-width: none;
+  }
+
+  .hero-actions {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section {
+    padding: 78px 0;
+  }
+
+  .section .container {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .section-head {
+    margin-bottom: 34px;
+  }
+
+  .project {
+    padding: 24px 0;
+    gap: 14px;
+  }
+
+  .project-index {
+    font-size: 2rem;
+  }
+
+  .project h3 {
+    font-size: 1.2rem;
+  }
+
+  .project-body p {
+    margin: 12px 0 18px;
+  }
+
+  #projects .visual-frame {
+    height: 230px;
+  }
+
+  .project-meta {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .project-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .project-actions .btn {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .case {
+    padding: 16px;
+  }
+
+  .case-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-item {
+    gap: 10px;
+  }
+
+  .news-body h3 {
+    font-size: 1.18rem;
+  }
+
+  .contact-email {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .footer-grid {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .footer-brand {
+    width: 100%;
+    margin-right: 0;
+  }
+}
