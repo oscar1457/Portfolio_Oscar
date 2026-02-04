@@ -3435,6 +3435,35 @@ body.is-scrolling .case-diagram {
     transform: translateY(0) scale(1);
   }
 
+  .case-extra,
+  .case-extra.no-scroll {
+    min-height: 0;
+    touch-action: pan-y;
+  }
+
+  .case-extra .extra-front,
+  .case-extra .extra-body {
+    position: static;
+    inset: auto;
+    transform: none;
+  }
+
+  .case-extra .extra-front {
+    opacity: 1;
+    margin-bottom: 10px;
+  }
+
+  .case-extra .extra-body {
+    display: none;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    overflow: visible;
+    max-height: none;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .case-extra:hover .extra-front,
   .case-extra:focus-within .extra-front {
     opacity: 1;
@@ -3443,18 +3472,11 @@ body.is-scrolling .case-diagram {
 
   .case-extra:hover .extra-body,
   .case-extra:focus-within .extra-body {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  .case-extra.is-open .extra-front {
-    opacity: 0;
-    transform: translateY(-6px);
+    opacity: 1;
+    transform: none;
   }
 
   .case-extra.is-open .extra-body {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+    display: block;
   }
 }

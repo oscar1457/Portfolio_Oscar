@@ -2244,6 +2244,8 @@ if (conceptModal && conceptTriggers.length) {
   let pinchDistance = 0;
   let pinchMidX = 0;
   let pinchMidY = 0;
+  const PINCH_ZOOM_THRESHOLD = 4;
+  const prefersTouchInput = window.matchMedia('(hover: none), (pointer: coarse)').matches;
   const activePointers = new Map();
   const MIN_ZOOM = 0.6;
   const MAX_ZOOM = 2.4;
@@ -2293,6 +2295,7 @@ if (conceptModal && conceptTriggers.length) {
   const onPointerDown = (event) => {
     if (!modalBody || !activeMap) return;
     if (event.target.closest('button')) return;
+    if (prefersTouchInput && event.pointerType !== 'touch') return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
     activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (typeof modalBody.setPointerCapture === 'function') {
@@ -2327,9 +2330,12 @@ if (conceptModal && conceptTriggers.length) {
       const nextMidY = (a.y + b.y) / 2;
 
       if (pinchDistance > 0 && nextDistance > 0) {
-        const ratio = nextDistance / pinchDistance;
-        const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * ratio));
-        setZoomAtPoint(nextZoom, nextMidX, nextMidY);
+        const delta = nextDistance - pinchDistance;
+        if (Math.abs(delta) >= PINCH_ZOOM_THRESHOLD) {
+          const ratio = nextDistance / pinchDistance;
+          const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * ratio));
+          setZoomAtPoint(nextZoom, nextMidX, nextMidY);
+        }
       }
 
       panX += nextMidX - pinchMidX;
@@ -2379,6 +2385,19 @@ if (conceptModal && conceptTriggers.length) {
   window.addEventListener('pointermove', onPointerMove, { passive: false });
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('pointercancel', onPointerUp);
+  const preventNativeGesture = (event) => {
+    if (!conceptModal.classList.contains('is-open')) return;
+    event.preventDefault();
+  };
+  modalBody.addEventListener('gesturestart', preventNativeGesture, { passive: false });
+  modalBody.addEventListener('gesturechange', preventNativeGesture, { passive: false });
+  modalBody.addEventListener('gestureend', preventNativeGesture, { passive: false });
+  modalBody.addEventListener('touchmove', (event) => {
+    if (!conceptModal.classList.contains('is-open')) return;
+    if (event.touches && event.touches.length > 1) {
+      event.preventDefault();
+    }
+  }, { passive: false });
   modalBody.addEventListener('wheel', (event) => {
     const zoomFactor = Math.exp(-event.deltaY * 0.0015);
     const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * zoomFactor));
@@ -2478,14 +2497,13 @@ function setupMobileCaseExtras() {
     card.addEventListener('click', (event) => {
       if (touchMoved) return;
       const isOpen = card.classList.contains('is-open');
-      const interactive = event.target.closest('a, button, input, textarea, select, label');
+      const insideBody = event.target.closest('.extra-body');
+
+      if (insideBody) return;
 
       if (!isOpen) {
         closeAll(card);
         card.classList.add('is-open');
-        if (interactive) {
-          event.preventDefault();
-        }
         return;
       }
     });
