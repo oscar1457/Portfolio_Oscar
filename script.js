@@ -324,6 +324,7 @@ let heroAggressiveMode = false;
 let i18nFadeTimer = null;
 let i18nFadeRaf = null;
 const I18N_FADE_MS = 260;
+const MODAL_OPEN_SELECTOR = '.playground-modal.is-open, .concept-modal.is-open, .nordbund-modal.is-open, .sentinel-modal.is-open';
 const FOCUSABLE_SELECTOR = [
   'a[href]',
   'area[href]',
@@ -337,6 +338,13 @@ const FOCUSABLE_SELECTOR = [
 ].join(', ');
 let openModalCount = 0;
 
+const reconcileBodyScrollLock = () => {
+  if (!document.querySelector(MODAL_OPEN_SELECTOR)) {
+    openModalCount = 0;
+    document.body.classList.remove('modal-open');
+  }
+};
+
 const lockBodyScroll = () => {
   openModalCount += 1;
   document.body.classList.add('modal-open');
@@ -347,7 +355,12 @@ const unlockBodyScroll = () => {
   if (openModalCount === 0) {
     document.body.classList.remove('modal-open');
   }
+  requestAnimationFrame(reconcileBodyScrollLock);
 };
+
+window.addEventListener('pageshow', () => {
+  requestAnimationFrame(reconcileBodyScrollLock);
+});
 
 function getFocusableElements(container) {
   return Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter((el) => {
@@ -581,6 +594,12 @@ function setupLazyFrameModal(config) {
 
 const markLoaded = () => {
   document.body.classList.add('is-loaded');
+  if (
+    typeof startBrandAnimation === 'function' &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    startBrandAnimation(false);
+  }
 };
 
 if (document.readyState === 'loading') {
