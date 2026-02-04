@@ -76,12 +76,12 @@ const translations = {
     phaseSentinelMvvmB: 'Stabile Updates',
     phaseSentinelUiA: 'Live Dashboards',
     phaseSentinelUiB: 'Alerts/Charts',
-    kovoChallenge: 'Problem: Parallax + UI states caused jank on scroll.',
-    kovoSolution: 'Solution: single rAF loop to batch UI updates and avoid layout thrash.',
-    nordChallenge: 'Problem: splash screen could hang if frontend load was slow.',
-    nordSolution: 'Solution: timed fallback + async close to guarantee UI unlock.',
-    sentinelChallenge: 'Problem: queue overflow under high ingest rate.',
-    sentinelSolution: 'Solution: bounded queues + drop counter + fixed-rate loop.',
+    kovoChallenge: 'Problem: Parallax und UI-States verursachten Ruckler beim Scrollen.',
+    kovoSolution: 'Loesung: Ein einzelner rAF-Loop buendelt Updates und vermeidet Layout-Thrashing.',
+    nordChallenge: 'Problem: Der Splash-Screen konnte haengen bleiben, wenn das Frontend langsam lud.',
+    nordSolution: 'Loesung: Zeitgesteuerter Fallback + asynchrones Schliessen fuer garantierten UI-Unlock.',
+    sentinelChallenge: 'Problem: Queue-Overflow bei hoher Ingest-Rate.',
+    sentinelSolution: 'Loesung: Begrenzte Queues + Drop-Counter + Loop mit fester Rate.',
     newsTitle: 'Neuigkeiten',
     newsSub: 'Aktuelle Entwicklungen und Projekte in Arbeit.',
     newsStatus: 'In Entwicklung',
@@ -342,6 +342,13 @@ const reconcileBodyScrollLock = () => {
   if (!document.querySelector(MODAL_OPEN_SELECTOR)) {
     openModalCount = 0;
     document.body.classList.remove('modal-open');
+    // iOS can sometimes get "stuck" after toggling overflow via a class.
+    // Clearing inline styles is harmless and helps recover scroll reliably.
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
   }
 };
 
@@ -361,6 +368,9 @@ const unlockBodyScroll = () => {
 window.addEventListener('pageshow', () => {
   requestAnimationFrame(reconcileBodyScrollLock);
 });
+
+window.addEventListener('scroll', reconcileBodyScrollLock, { passive: true });
+window.addEventListener('touchstart', reconcileBodyScrollLock, { passive: true });
 
 function getFocusableElements(container) {
   return Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter((el) => {
@@ -1170,6 +1180,7 @@ if (hero && dotsCanvas && !useHeroGradientFlow) {
   let lastFrameTime = 0;
   let renderDensity = 1;
   let densityScore = 0;
+  let densityMode = 0;
   let samplePositions = [];
 
   function buildSamplePositions() {
@@ -1231,6 +1242,7 @@ if (hero && dotsCanvas && !useHeroGradientFlow) {
       animId = requestAnimationFrame(render);
       return;
     }
+
     const minDelta = 1000 / 60;
     const frameDelta = lastFrameTime ? (time - lastFrameTime) : minDelta;
     if (frameDelta < minDelta) {
@@ -1245,14 +1257,21 @@ if (hero && dotsCanvas && !useHeroGradientFlow) {
       densityScore = Math.max(0, densityScore - 1);
     }
 
-    let nextDensity = 1;
-    if (densityScore > 12) {
-      nextDensity = 1.3;
-    } else if (densityScore > 6) {
-      nextDensity = 1.15;
+    // Hysteresis to avoid density "popping" (can look like flicker on cursor hover).
+    let nextMode = densityMode;
+    if (densityMode === 0) {
+      if (densityScore > 14) nextMode = 2;
+      else if (densityScore > 8) nextMode = 1;
+    } else if (densityMode === 1) {
+      if (densityScore > 16) nextMode = 2;
+      else if (densityScore < 4) nextMode = 0;
+    } else {
+      if (densityScore < 10) nextMode = 1;
     }
-    if (nextDensity !== renderDensity) {
-      renderDensity = nextDensity;
+
+    if (nextMode !== densityMode) {
+      densityMode = nextMode;
+      renderDensity = densityMode === 2 ? 1.3 : (densityMode === 1 ? 1.15 : 1);
       buildSamplePositions();
     }
 
@@ -1402,6 +1421,7 @@ if (hero && dotsCanvas && !useHeroGradientFlow) {
       const r = Math.round(c1[0] + (c2[0] - c1[0]) * frac);
       const g = Math.round(c1[1] + (c2[1] - c1[1]) * frac);
       const b = Math.round(c1[2] + (c2[2] - c1[2]) * frac);
+
       ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
       for (let i = 1; i < alphaBuckets; i++) {
         const cb = colorBatches[i];
@@ -1416,21 +1436,24 @@ if (hero && dotsCanvas && !useHeroGradientFlow) {
         ctx.fill();
       }
 
-      ctx.globalAlpha = 0.12;
-      ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      for (let i = 1; i < alphaBuckets; i++) {
-        const cb = colorBatches[i];
-        if (cb.x.length === 0) continue;
-        for (let j = 0; j < cb.x.length; j++) {
-          const bx = cb.x[j], by = cb.y[j], brx = cb.rx[j], bry = cb.ry[j], brot = cb.rot[j];
-          ctx.moveTo(bx + brx * Math.cos(brot), by + brx * Math.sin(brot));
-          ctx.ellipse(bx, by, brx * 1.2, bry * 1.2, brot, 0, Math.PI * 2);
+      // Glow pass (kept, but auto-dials down when frames are too slow).
+      if (frameDelta < 32) {
+        ctx.globalAlpha = 0.12;
+        ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        for (let i = 1; i < alphaBuckets; i++) {
+          const cb = colorBatches[i];
+          if (cb.x.length === 0) continue;
+          for (let j = 0; j < cb.x.length; j++) {
+            const bx = cb.x[j], by = cb.y[j], brx = cb.rx[j], bry = cb.ry[j], brot = cb.rot[j];
+            ctx.moveTo(bx + brx * Math.cos(brot), by + brx * Math.sin(brot));
+            ctx.ellipse(bx, by, brx * 1.2, bry * 1.2, brot, 0, Math.PI * 2);
+          }
         }
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
-      ctx.fill();
-      ctx.shadowBlur = 0;
     }
     animId = requestAnimationFrame(render);
   }
