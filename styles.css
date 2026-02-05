@@ -614,7 +614,7 @@ body.show-quantum-scroll .quantum-scroll {
 }
 
 .hero--tangent-bg .hero-mark {
-  color: #ff542e;
+  color: rgba(245, 245, 245, 0.92);
   font-size: clamp(44px, 6.2vw, 72px);
   font-weight: 700;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -700,12 +700,11 @@ body.show-quantum-scroll .quantum-scroll {
 }
 
 .hero--tangent-bg .hero-actions .btn:focus-visible {
-  outline: 2px solid #ff542e;
+  outline: 2px solid rgba(245, 245, 245, 0.92);
   outline-offset: 4px;
 }
 
-.hero--tangent-bg .hero-actions .btn:hover,
-.hero--tangent-bg .hero-actions .btn:focus-visible {
+.hero--tangent-bg .hero-actions .btn:hover {
   box-shadow: none;
 }
 
