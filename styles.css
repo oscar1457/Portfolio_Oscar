@@ -742,9 +742,14 @@ body.show-quantum-scroll .quantum-scroll {
   background: rgba(245, 245, 245, 0.82);
   opacity: 0;
   pointer-events: none;
-  z-index: 0;
+  /* Above the poster background pseudo-element. */
+  z-index: 1;
   transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
+}
+
+.hero--tangent-bg .hero-grid {
+  z-index: 2;
 }
 
 .hero--tangent-bg .hero-scanline {
