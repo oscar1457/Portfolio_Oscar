@@ -1086,6 +1086,15 @@ const hero = document.querySelector('.hero');
 const dotsCanvas = document.querySelector('.hero-dots');
 const heroCursor = document.querySelector('[data-hero-cursor]');
 
+// Hero background preview toggle (keeps the current poster background by default).
+if (hero) {
+  const params = new URLSearchParams(window.location.search);
+  const bg = params.get('bg');
+  if (bg === 'canva') {
+    hero.classList.add('hero--bg-canva');
+  }
+}
+
 // Home background (Hero): halftone canvas animation (black/white), optimized for mobile.
 // Replaces the previous chromatic dot-field to avoid flicker and reduce input jank.
 // Note: only enabled when explicitly requested via class to avoid running hidden canvases.
