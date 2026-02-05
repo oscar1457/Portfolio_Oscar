@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <link rel="preload" as="image" href="public/hero-poster.png" />
+    <!-- Hero background is CSS-only for fast first paint (no image preload). -->
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -50,12 +50,14 @@
     </div>
     <canvas id="project-scroll-indicator" class="scroll-orbit-indicator" aria-hidden="true"></canvas>
     <main id="main-viewport">
-      <section class="hero hero--no-media hero--tangent-bg" id="top">
-        <canvas class="hero-dots" aria-hidden="true"></canvas>
-        <div class="hero-cursor" data-hero-cursor aria-hidden="true"></div>
+      <!-- Variant: hero--corner-light (neo, controlled) / hero--recruiter2 (lively) / hero--recruiter (static). -->
+      <section class="hero hero--no-media hero--corner-light hero--three-bg" id="top">
+        <canvas id="particleCanvas" class="hero-dots" aria-hidden="true"></canvas>
         <div class="container hero-grid">
           <div class="hero-copy">
-            <div class="hero-mark" aria-hidden="true">&lt;/&gt;</div>
+            <p class="eyebrow" data-i18n="heroEyebrow">Software Engineering</p>
+            <h1><span data-i18n="heroTitle">Robuste Systeme. Klare Daten</span></h1>
+            <p class="hero-sub" data-i18n="heroSub">Web &amp; Desktop - Architektur, Performance, Visuals.</p>
             <div class="hero-actions">
               <a class="btn primary" href="#projects" data-i18n="heroCtaPrimary">Projekte ansehen</a>
               <a class="btn secondary" href="public/CV/Junior%20Entwickler.pdf" data-i18n="heroCtaSecondary">CV herunterladen</a>
@@ -848,6 +850,8 @@ console.log('dropped: ' + dropped);</textarea>
         </div>
       </div>
     </template>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

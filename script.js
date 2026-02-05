@@ -7,7 +7,7 @@ const translations = {
     navStack: 'Stack',
     navContact: 'Kontakt',
     heroEyebrow: 'Software Engineering',
-    heroTitle: 'Robuste Systeme. Klare Daten.',
+    heroTitle: 'Robuste Systeme. Klare Daten',
     heroSub: 'Web & Desktop - Architektur, Performance, Visuals.',
     heroCtaPrimary: 'Projekte ansehen',
     heroCtaSecondary: 'CV herunterladen',
@@ -160,7 +160,7 @@ const translations = {
     navStack: 'Stack',
     navContact: 'Contact',
     heroEyebrow: 'Software Engineering',
-    heroTitle: 'Robust systems. Clear data.',
+    heroTitle: 'Robust systems. Clear data',
     heroSub: 'Web & desktop - architecture, performance, visuals.',
     heroCtaPrimary: 'View projects',
     heroCtaSecondary: 'Download CV',
@@ -323,6 +323,8 @@ let updateProjectRanges = null;
 let i18nFadeTimer = null;
 let i18nFadeRaf = null;
 const I18N_FADE_MS = 260;
+let heroTypewriterTimer = null;
+let heroTypewriterActive = false;
 const MODAL_OPEN_SELECTOR = '.playground-modal.is-open, .concept-modal.is-open, .nordbund-modal.is-open, .sentinel-modal.is-open';
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -601,14 +603,71 @@ function setupLazyFrameModal(config) {
   return { open: openModal, close: closeModal };
 }
 
+const stopHeroTypewriter = () => {
+  heroTypewriterActive = false;
+  if (heroTypewriterTimer) {
+    clearTimeout(heroTypewriterTimer);
+    heroTypewriterTimer = null;
+  }
+  const titleEl = document.querySelector('[data-i18n="heroTitle"]');
+  if (titleEl) {
+    titleEl.classList.remove('is-typewriting');
+  }
+};
+
+const startHeroTypewriterOnce = (delayMs = 520) => {
+  const titleEl = document.querySelector('[data-i18n="heroTitle"]');
+  if (!titleEl) return;
+  if (titleEl.dataset.typewriterDone === '1') return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fullText = (titleEl.textContent || '').trim();
+  if (prefersReducedMotion || fullText.length < 2) {
+    titleEl.dataset.typewriterDone = '1';
+    return;
+  }
+
+  titleEl.dataset.typewriterDone = '1';
+  heroTypewriterActive = true;
+  titleEl.textContent = '';
+  titleEl.classList.add('is-typewriting');
+
+  let index = 0;
+  const typeNext = () => {
+    if (!heroTypewriterActive) return;
+    titleEl.textContent = fullText.slice(0, index + 1);
+    index += 1;
+
+    if (index >= fullText.length) {
+      heroTypewriterActive = false;
+      // Keep caret briefly after finishing to feel intentional.
+      heroTypewriterTimer = setTimeout(() => {
+        titleEl.classList.remove('is-typewriting');
+        heroTypewriterTimer = null;
+      }, 700);
+      return;
+    }
+
+    const char = fullText[index - 1] || '';
+    const isPunct = /[.,:;!?]/.test(char);
+    const base = isPunct ? 140 : 26;
+    const jitter = Math.random() * 18;
+    heroTypewriterTimer = setTimeout(typeNext, base + jitter);
+  };
+
+  heroTypewriterTimer = setTimeout(typeNext, delayMs);
+};
+
 const markLoaded = () => {
   document.body.classList.add('is-loaded');
   if (
     typeof startBrandAnimation === 'function' &&
     !window.matchMedia('(prefers-reduced-motion: reduce)').matches
   ) {
-    startBrandAnimation(false);
+    // Slight delay so the header is visible when the frames begin swapping.
+    setTimeout(() => startBrandAnimation(false), 320);
   }
+  startHeroTypewriterOnce(560);
 };
 
 if (document.readyState === 'loading') {
@@ -623,6 +682,7 @@ function setLanguage(lang, options = {}) {
   const { animate = true } = options;
   const dictionary = translations[lang] || translations.de;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  stopHeroTypewriter();
 
   const applyLanguage = () => {
     elements.forEach((el) => {
@@ -945,14 +1005,22 @@ const nav = document.querySelector('.nav');
 
 const brandTrigger = document.querySelector('.brand-oq');
 if (brandTrigger && typeof startBrandAnimation === 'function') {
-  brandTrigger.addEventListener('mouseenter', () => {
-    startBrandAnimation(true);
-  });
-  brandTrigger.addEventListener('mouseleave', () => {
-    if (typeof stopBrandAnimation === 'function') {
-      stopBrandAnimation();
-    }
-  });
+  brandTrigger.addEventListener(
+    'pointerenter',
+    () => {
+      startBrandAnimation(true);
+    },
+    { passive: true }
+  );
+  brandTrigger.addEventListener(
+    'pointerleave',
+    () => {
+      if (typeof stopBrandAnimation === 'function') {
+        stopBrandAnimation();
+      }
+    },
+    { passive: true }
+  );
   brandTrigger.addEventListener('focusin', () => {
     startBrandAnimation(true);
   });
@@ -1091,6 +1159,11 @@ const heroCursor = document.querySelector('[data-hero-cursor]');
 // Note: only enabled when explicitly requested via class to avoid running hidden canvases.
 if (hero && dotsCanvas && hero.classList.contains('hero--halftone')) {
   initHeroHalftoneBackground(hero, dotsCanvas);
+}
+
+// Home background (Hero): Three.js particle grid (interactive) - only on desktop/fine pointer.
+if (hero && dotsCanvas && hero.classList.contains('hero--three-bg')) {
+  initHeroThreeParticleBackground(hero, dotsCanvas);
 }
 
 // Home: custom cursor only inside the hero (desktop/fine pointer).
@@ -1355,6 +1428,354 @@ function updateSentinelReadout() {
   sentinelVibration.textContent = `${vibration} g`;
   sentinelPosition.textContent = `${position} mm`;
   sentinelRpm.textContent = `${rpm}`;
+}
+
+function initHeroThreeParticleBackground(heroEl, canvas) {
+  const THREE = window.THREE;
+  if (!THREE) {
+    console.error('Three.js not loaded');
+    return;
+  }
+
+  // Background-only port of the provided Antigravity snippet (same visuals/params).
+  class ParticleSystem {
+    constructor(canvasEl) {
+      this.canvas = canvasEl;
+      this.scene = null;
+      this.camera = null;
+      this.renderer = null;
+      this.particles = null;
+      this.material = null;
+      this.mousePos = { x: 0, y: 0 };
+      this.targetMousePos = { x: 0, y: 0 };
+      this.time = 0;
+      this.animationId = null;
+
+      this.init();
+    }
+
+    init() {
+      const width = heroEl ? heroEl.clientWidth : window.innerWidth;
+      const height = heroEl ? heroEl.clientHeight : window.innerHeight;
+
+      // Scene setup
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      this.camera.position.z = 40; // Immersive Zoom
+
+      // WebGL renderer with optimizations
+      const rendererParams = {
+        canvas: this.canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance',
+        precision: 'highp',
+      };
+
+      this.renderer = new THREE.WebGLRenderer(rendererParams);
+      this.renderer.setSize(width, height);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      this.renderer.setClearColor(0x000000, 0);
+
+      // Particle geometry
+      const particleCount = 2000;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const velocities = new Float32Array(particleCount * 3);
+      const diagonalOffsets = new Float32Array(particleCount);
+
+      const gridSize = 50;
+      const cellSize = 3;
+
+      for (let i = 0; i < particleCount; i++) {
+        const row = Math.floor(i / gridSize);
+        const col = i % gridSize;
+
+        let baseX = (col - gridSize / 2) * cellSize;
+        if (row % 2 !== 0) {
+          baseX += cellSize * 0.5;
+        }
+
+        const baseY = (row - gridSize / 2) * (cellSize * 1.0);
+
+        positions[i * 3] = baseX;
+        positions[i * 3 + 1] = baseY;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 5;
+
+        velocities[i * 3] = 0;
+        velocities[i * 3 + 1] = 0;
+        velocities[i * 3 + 2] = 0;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+      geometry.setAttribute('diagonalOffset', new THREE.BufferAttribute(diagonalOffsets, 1));
+
+      // Shaders (as provided)
+      const vertexShader = `
+                    attribute vec3 velocity;
+                    attribute float diagonalOffset;
+                    uniform vec3 mousePos;
+                    uniform float time;
+                    uniform float isDark;
+                    uniform float influenceRadius;
+
+                    varying float vOpacity;
+                    varying vec3 vColor;
+                    varying float vWaveDisplacement;
+                    varying float vRotationAngle;
+                    varying float vDistToMouse;
+                    varying float vTiltAngle;
+
+                    void main() {
+                        vec3 pos = position;
+
+                        float distToMouse = length(pos.xy - mousePos.xy);
+                        vDistToMouse = distToMouse;
+
+                        float magnetRadius = 40.0;
+
+                        float amplitude = 5.0;
+                        float minRadius = 3.0;
+                        float maxRadius = 40.0;
+
+                        vec3 toMagnet = mousePos - pos;
+                        float dist3D = length(toMagnet);
+                        vec3 magnetDirection = normalize(toMagnet);
+
+                        float wave = 0.0;
+                        if (distToMouse < magnetRadius) {
+                            if (distToMouse > minRadius && distToMouse < maxRadius) {
+                                float normalizedDist = (distToMouse - minRadius) / (maxRadius - minRadius);
+                                float decay = sin(normalizedDist * 3.14159);
+
+                                wave = amplitude * decay;
+
+                                vec2 direction = normalize(mousePos.xy - pos.xy);
+                                float attractionForce = amplitude * decay * 0.3;
+                                pos.xy += direction * attractionForce;
+                            }
+
+                            vRotationAngle = atan(mousePos.y - pos.y, mousePos.x - pos.x) + 1.5708;
+
+                            float horizontalDist = length(mousePos.xy - pos.xy);
+                            vTiltAngle = atan(mousePos.z - pos.z, horizontalDist);
+
+                        } else {
+                            vRotationAngle = 0.0;
+                            vTiltAngle = 0.0;
+                        }
+
+                        pos.z += wave;
+                        vWaveDisplacement = wave;
+
+                        if (distToMouse < 40.0) {
+                            float t = distToMouse / 40.0;
+                            float breath = sin(time * 3.0 - distToMouse * 0.2);
+
+                            vec2 toMouse2 = mousePos.xy - pos.xy;
+                            vec2 dir = normalize(toMouse2);
+
+                            float stretch = breath * (1.0 - t) * 1.5;
+
+                            pos.xy -= dir * stretch;
+                        }
+
+                        float opacity = 0.15;
+
+                        if (distToMouse < 10.0) {
+                            opacity = 0.001;
+
+                        } else if (distToMouse < 15.0) {
+                            float zoneFactor = (distToMouse - 3.0) / 12.0;
+                            opacity = 0.20 + zoneFactor * 0.75;
+
+                        } else if (distToMouse < 30.0) {
+                            float zoneFactor = (distToMouse - 15.0) / 25.0;
+                            opacity = 0.95 - zoneFactor * 0.80;
+                        }
+
+                        vOpacity = clamp(opacity, 0.15, 0.95);
+
+                        if (isDark > 0.5) {
+                            vColor = vec3(0.2, 0.4, 1.0);
+                        } else {
+                           vColor = vec3(0.2, 0.4, 1.0);
+                        }
+
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+
+                        float particleSize = 6.0;
+
+                        if (distToMouse >= 40.0) {
+                             particleSize = 6.0;
+                        }
+
+                        float baseSize = 6.0;
+                        float maxSize = 21.0;
+                        float effectRadius = 40.0;
+
+                        if (distToMouse < effectRadius) {
+                            float t = distToMouse / effectRadius;
+                            t = t * t * (3.0 - 2.0 * t);
+                            float zoomFactor = 1.0 - t;
+
+                            float wavePhase = distToMouse * 0.5;
+                            float pulse = sin(time * 4.0 - wavePhase);
+                            float heightFactor = 1.0 + pulse * 0.3;
+
+                            particleSize = (baseSize + (maxSize - baseSize) * zoomFactor) * heightFactor;
+                        } else {
+                            particleSize = baseSize;
+                        }
+
+                        gl_PointSize = particleSize;
+                    }
+                `;
+
+      const fragmentShader = `
+                    varying float vOpacity;
+                    varying vec3 vColor;
+                    varying float vWaveDisplacement;
+                    varying float vRotationAngle;
+                    varying float vDistToMouse;
+                    varying float vTiltAngle;
+
+                    void main() {
+                        vec2 uv = gl_PointCoord - vec2(0.5);
+
+                        float c = cos(vRotationAngle);
+                        float s = sin(vRotationAngle);
+                        vec2 rotatedUV = vec2(uv.x * c - uv.y * s, uv.x * s + uv.y * c);
+
+                        float tiltCos = cos(vTiltAngle);
+                        float tiltSin = sin(vTiltAngle);
+
+                        float foreShortening = abs(tiltCos);
+
+                        float compressedX = rotatedUV.x * foreShortening;
+
+                        float halfWidth = 0.096;
+                        float halfLength = 0.28;
+
+                        float dX = abs(compressedX) / halfWidth;
+                        float dY = abs(rotatedUV.y) / halfLength;
+
+                        if (dX*dX + dY*dY > 1.0) {
+                            discard;
+                        }
+
+                        float distFromCenter = sqrt(dX*dX + dY*dY);
+                        float edgeFalloff = 1.0 - distFromCenter;
+                        edgeFalloff = smoothstep(0.0, 0.2, edgeFalloff);
+
+                        float alpha = edgeFalloff * vOpacity;
+                        alpha = clamp(alpha, 0.0, 1.0);
+
+                        float displacement = abs(vWaveDisplacement);
+                        float maxDisplacement = 15.0;
+                        float colorMixFactor = clamp(displacement / maxDisplacement, 0.0, 1.0);
+
+                        vec3 primaryColor = vec3(0.2, 0.4, 1.0);
+                        vec3 secondaryColor = vec3(0.2, 0.4, 1.0);
+
+                        vec3 finalColor = mix(primaryColor, secondaryColor, colorMixFactor);
+
+                        finalColor *= 1.3;
+
+                        gl_FragColor = vec4(finalColor, alpha);
+                    }
+                `;
+
+      const isDark = 0.0;
+
+      this.material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+          mousePos: { value: new THREE.Vector3(0, 0, 0) },
+          time: { value: 0 },
+          isDark: { value: isDark },
+          influenceRadius: { value: 150.0 },
+        },
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+      });
+
+      this.particles = new THREE.Points(geometry, this.material);
+      this.scene.add(this.particles);
+
+      // Events
+      window.addEventListener('mousemove', (e) => this.onMouseMove(e), { passive: true });
+      window.addEventListener('resize', () => this.onWindowResize(), { passive: true });
+
+      // Start animation loop
+      this.animate();
+    }
+
+    onMouseMove(e) {
+      this.targetMousePos.x = e.clientX;
+      this.targetMousePos.y = e.clientY;
+    }
+
+    onWindowResize() {
+      const width = heroEl ? heroEl.clientWidth : window.innerWidth;
+      const height = heroEl ? heroEl.clientHeight : window.innerHeight;
+
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height);
+    }
+
+    animate() {
+      this.animationId = requestAnimationFrame(() => this.animate());
+
+      this.time += 0.016;
+      this.material.uniforms.time.value = this.time;
+
+      // Smooth mouse position
+      this.mousePos.x += (this.targetMousePos.x - this.mousePos.x) * 0.1;
+      this.mousePos.y += (this.targetMousePos.y - this.mousePos.y) * 0.1;
+
+      // Raycasting for exact world position
+      const mouse = new THREE.Vector2();
+      mouse.x = (this.mousePos.x / window.innerWidth) * 2 - 1;
+      mouse.y = -(this.mousePos.y / window.innerHeight) * 2 + 1;
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, this.camera);
+
+      const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+      const intersectPoint = new THREE.Vector3();
+      raycaster.ray.intersectPlane(planeZ, intersectPoint);
+
+      this.material.uniforms.mousePos.value.set(intersectPoint.x, intersectPoint.y, 0);
+
+      this.renderer.render(this.scene, this.camera);
+    }
+
+    dispose() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+      }
+      if (this.renderer) {
+        this.renderer.dispose();
+      }
+      if (this.particles && this.particles.geometry) {
+        this.particles.geometry.dispose();
+      }
+      if (this.material) {
+        this.material.dispose();
+      }
+    }
+  }
+
+  // Init immediately (script is at the end of body).
+  const system = new ParticleSystem(canvas);
+
+  window.addEventListener('beforeunload', () => {
+    system.dispose();
+  }, { passive: true });
 }
 
 function startSentinelReadout() {

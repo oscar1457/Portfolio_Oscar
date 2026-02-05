@@ -642,6 +642,692 @@ body.show-quantum-scroll .quantum-scroll {
     transform: translate(-50%, -50%);
     opacity: 0.85;
   }
+
+  /* Global cursor (desktop only): native cursor image = zero JS / zero lag. */
+  html {
+    cursor: url('public/Icons%20O.Q/navegar-cursor.png') 2 2, auto;
+  }
+
+  /* Override any element-specific cursors ("hand", text cursor, etc.). */
+  html * {
+    cursor: inherit !important;
+  }
+}
+
+.hero--recruiter {
+  /* Minimal / premium: paper base + subtle depth. */
+  background:
+    radial-gradient(1100px 520px at 18% 28%, rgba(0, 0, 0, 0.055), transparent 62%),
+    radial-gradient(900px 520px at 82% 66%, rgba(0, 0, 0, 0.05), transparent 58%),
+    linear-gradient(135deg, #f6f5f2 0%, #f1f1ee 55%, #f7f6f3 100%);
+  isolation: isolate;
+}
+
+.hero--recruiter::after {
+  /* Very subtle film grain / texture without assets. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.35) 0.7px, transparent 0.7px),
+    radial-gradient(circle at 70% 60%, rgba(0, 0, 0, 0.3) 0.6px, transparent 0.6px),
+    radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.22) 0.55px, transparent 0.55px);
+  background-size: 64px 64px, 86px 86px, 78px 78px;
+  mix-blend-mode: multiply;
+  transform: translate3d(0, 0, 0);
+}
+
+.hero--recruiter .hero-dots {
+  display: none !important;
+}
+
+.hero--recruiter .hero-grid,
+.hero--recruiter .hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero--recruiter .hero-copy {
+  max-width: 62ch;
+  padding: 30px 30px 28px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.08);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.hero--recruiter .eyebrow {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.hero--recruiter .hero-dot {
+  animation: none;
+  color: rgba(0, 0, 0, 0.42);
+}
+
+.hero--recruiter .hero-sub {
+  color: rgba(0, 0, 0, 0.62);
+}
+
+.hero--recruiter .hero-actions {
+  margin-top: 26px;
+  gap: 12px;
+}
+
+.hero--recruiter .btn {
+  border-radius: 14px;
+  padding: 13px 18px;
+  box-shadow: none;
+}
+
+.hero--recruiter .btn.primary {
+  background: #0f0f0f;
+  color: rgba(245, 245, 245, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hero--recruiter .btn.secondary {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.hero--recruiter .btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.6);
+  outline-offset: 4px;
+}
+
+.hero--recruiter2 {
+  /* Minimal + premium, but with subtle motion and a bit more "life". */
+  background:
+    radial-gradient(1100px 520px at 16% 22%, rgba(0, 0, 0, 0.06), transparent 64%),
+    radial-gradient(900px 520px at 84% 72%, rgba(0, 0, 0, 0.055), transparent 60%),
+    linear-gradient(135deg, #f6f5f2 0%, #f1f1ee 55%, #f7f6f3 100%);
+  isolation: isolate;
+}
+
+.hero--recruiter2::before {
+  content: '';
+  position: absolute;
+  inset: -18% -10%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(600px 360px at 22% 28%, rgba(0,  0,  0, 0.055), transparent 68%),
+    radial-gradient(520px 320px at 74% 58%, rgba(0,  0,  0, 0.05), transparent 70%),
+    radial-gradient(420px 280px at 60% 18%, rgba(0,  0,  0, 0.035), transparent 72%);
+  filter: blur(18px);
+  opacity: 0.9;
+  transform: translate3d(0, 0, 0);
+  animation: recruiterGlowDrift 18s ease-in-out infinite alternate;
+}
+
+.hero--recruiter2::after {
+  /* Subtle film grain / texture without assets. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.35) 0.7px, transparent 0.7px),
+    radial-gradient(circle at 70% 60%, rgba(0, 0, 0, 0.3) 0.6px, transparent 0.6px),
+    radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.22) 0.55px, transparent 0.55px);
+  background-size: 64px 64px, 86px 86px, 78px 78px;
+  mix-blend-mode: multiply;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes recruiterGlowDrift {
+  0% {
+    transform: translate3d(-1.2%, -1.4%, 0) scale(1.02);
+  }
+  100% {
+    transform: translate3d(1.6%, 1.8%, 0) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero--recruiter2::before {
+    animation: none;
+  }
+}
+
+.hero--recruiter2 .hero-dots {
+  display: none !important;
+}
+
+.hero--recruiter2 .hero-grid,
+.hero--recruiter2 .hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero--recruiter2 .hero-copy {
+  max-width: 64ch;
+  padding: 32px 32px 30px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 34px 70px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.hero--recruiter2 .hero-copy::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.hero--recruiter2 .eyebrow {
+  color: rgba(0, 0, 0, 0.58);
+}
+
+.hero--recruiter2 .hero-dot {
+  color: rgba(0, 0, 0, 0.38);
+  animation: recruiterDotBlink 1.7s steps(1) infinite;
+}
+
+@keyframes recruiterDotBlink {
+  0%, 72% { opacity: 1; }
+  73%, 100% { opacity: 0.12; }
+}
+
+.hero--recruiter2 .hero-sub {
+  color: rgba(0, 0, 0, 0.64);
+}
+
+.hero--recruiter2 .hero-actions {
+  margin-top: 26px;
+  gap: 12px;
+}
+
+.hero--recruiter2 .btn {
+  border-radius: 14px;
+  padding: 13px 18px;
+  box-shadow: none;
+}
+
+.hero--recruiter2 .btn.primary {
+  background: #0f0f0f;
+  color: rgba(245, 245, 245, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hero--recruiter2 .btn.primary::after {
+  content: '↗';
+  display: inline-block;
+  margin-left: 10px;
+  opacity: 0.7;
+  transform: translate3d(0, 0, 0);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.hero--recruiter2 .btn.primary:hover::after,
+.hero--recruiter2 .btn.primary:focus-visible::after {
+  opacity: 1;
+  transform: translate3d(2px, -2px, 0);
+}
+
+.hero--recruiter2 .btn.secondary {
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.hero--recruiter2 .btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.6);
+  outline-offset: 4px;
+}
+
+@media (max-width: 720px) {
+  .hero--recruiter2 .hero-copy {
+    width: 100%;
+    max-width: none;
+    padding: 22px 18px 20px 28px;
+    border-radius: 22px;
+  }
+
+  .hero--recruiter2 .hero-copy::before {
+    left: 14px;
+    top: 14px;
+    bottom: 14px;
+  }
+}
+
+.hero--corner-light {
+  /* Neoformism, but controlled (no random blobs): one clean light source from top-left. */
+  background:
+    radial-gradient(900px 520px at 16% 18%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0) 62%),
+    radial-gradient(1000px 680px at 88% 86%, rgba(0, 0, 0, 0.085), rgba(0, 0, 0, 0) 60%),
+    linear-gradient(135deg, #f6f5f2 0%, #eff0f3 55%, #f7f6f3 100%);
+  isolation: isolate;
+}
+
+.hero--corner-light::after {
+  /* Subtle micro-grain to avoid "flat" without looking noisy. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  background-image:
+    radial-gradient(circle at 12% 22%, rgba(0, 0, 0, 0.35) 0.65px, transparent 0.65px),
+    radial-gradient(circle at 68% 58%, rgba(0, 0, 0, 0.28) 0.55px, transparent 0.55px),
+    radial-gradient(circle at 42% 78%, rgba(0, 0, 0, 0.22) 0.5px, transparent 0.5px);
+  background-size: 72px 72px, 92px 92px, 86px 86px;
+  mix-blend-mode: multiply;
+  transform: translate3d(0, 0, 0);
+}
+
+.hero--corner-light .hero-dots {
+  display: none !important;
+}
+
+/* Enable the hero canvas when we explicitly run a Three.js background. */
+.hero--corner-light.hero--three-bg .hero-dots {
+  display: block !important;
+  opacity: 0.82;
+  /* Keep it subtle + “premium” (avoid neon oversaturation). */
+  filter: saturate(0.95) contrast(1.06) brightness(0.82);
+}
+
+.hero--corner-light .hero-grid,
+.hero--corner-light .hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero--corner-light .hero-copy {
+  max-width: 64ch;
+  padding: 34px 34px 30px;
+  border-radius: 28px;
+  background: rgba(242, 243, 246, 0.84);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    20px 20px 52px rgba(0, 0, 0, 0.12),
+    -20px -20px 54px rgba(255, 255, 255, 0.92),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.hero--corner-light .hero-copy::before {
+  /* Small structural accent so the card feels designed (not "just a blur box"). */
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.06));
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.hero--corner-light .eyebrow {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.hero--corner-light h1 {
+  color: rgba(0, 0, 0, 0.92);
+  letter-spacing: -0.02em;
+}
+
+.hero--corner-light .hero-sub {
+  color: rgba(0, 0, 0, 0.62);
+}
+
+/* Hero title: keep the dot attached (no wrapping/gaps) + typewriter caret on load. */
+.hero--corner-light [data-i18n="heroTitle"] {
+  position: relative;
+  display: inline;
+}
+
+.hero--corner-light [data-i18n="heroTitle"]::after {
+  content: '.';
+  display: inline-block;
+  margin-left: 2px;
+  color: rgba(0, 0, 0, 0.32);
+}
+
+.hero--corner-light [data-i18n="heroTitle"].is-typewriting::after {
+  /* Hide the dot while typing so the caret reads clearly. */
+  opacity: 0;
+  animation: none;
+}
+
+.hero--corner-light [data-i18n="heroTitle"].is-typewriting::before {
+  content: '';
+  position: absolute;
+  right: -0.12em;
+  bottom: 0.05em;
+  width: 2px;
+  height: 0.95em;
+  background: rgba(0, 0, 0, 0.55);
+  animation: heroCaretBlink 0.9s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Simple blink (mono). */
+  .hero--corner-light [data-i18n="heroTitle"]::after {
+    animation: heroDotBlink 1.25s steps(1, end) infinite;
+    will-change: opacity;
+  }
+}
+
+@keyframes heroDotBlink {
+  0%,
+  80%,
+  100% {
+    opacity: 1;
+  }
+  82%,
+  98% {
+    opacity: 0;
+  }
+}
+
+@keyframes heroCaretBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.hero--corner-light .hero-actions {
+  margin-top: 28px;
+  gap: 12px;
+}
+
+.hero--corner-light .btn {
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow:
+    14px 14px 30px rgba(0, 0, 0, 0.12),
+    -14px -14px 34px rgba(255, 255, 255, 0.92);
+  transition:
+    box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+}
+
+/* No hover "levitation" inside the hero (keep shadows stable). */
+.hero--corner-light .btn:hover,
+.hero--corner-light .btn:focus-visible {
+  box-shadow:
+    14px 14px 30px rgba(0, 0, 0, 0.12),
+    -14px -14px 34px rgba(255, 255, 255, 0.92);
+}
+
+/* Override global button hover shadows (primary/non-primary) for hero CTAs. */
+.hero--corner-light .btn.primary:hover,
+.hero--corner-light .btn.primary:focus-visible,
+.hero--corner-light .btn.secondary:hover,
+.hero--corner-light .btn.secondary:focus-visible {
+  box-shadow:
+    14px 14px 30px rgba(0, 0, 0, 0.12),
+    -14px -14px 34px rgba(255, 255, 255, 0.92);
+}
+
+/* Match the "Case Study" button micro-interaction in the hero (arrow nudge) without levitation. */
+.hero--corner-light .btn.secondary::after {
+  content: '\2192';
+  display: inline-block;
+  margin-left: 10px;
+  transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hero--corner-light .btn.secondary:hover::after,
+.hero--corner-light .btn.secondary:focus-visible::after {
+  transform: translateX(4px);
+}
+
+.hero--corner-light .btn.primary {
+  background: #0f0f0f;
+  color: rgba(245, 245, 245, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hero--corner-light .btn.secondary {
+  background: rgba(242, 243, 246, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.hero--corner-light .btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.6);
+  outline-offset: 4px;
+}
+
+@media (max-width: 720px) {
+  .hero--corner-light .hero-copy {
+    width: 100%;
+    max-width: none;
+    padding: 24px 18px 20px;
+    border-radius: 22px;
+  }
+
+  .hero--corner-light .hero-copy::before {
+    left: 14px;
+    top: 14px;
+    bottom: 14px;
+  }
+
+  .hero--corner-light .hero-actions {
+    width: 100%;
+  }
+
+  .hero--corner-light .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.hero--neo {
+  /* Neoformism, but keep it premium (paper + depth + bold shapes). */
+  background:
+    radial-gradient(1200px 700px at 18% 22%, rgba(0, 0, 0, 0.085), transparent 62%),
+    radial-gradient(900px 620px at 86% 68%, rgba(0, 0, 0, 0.07), transparent 60%),
+    linear-gradient(135deg, #f6f5f2 0%, #eff0f3 55%, #f7f6f3 100%);
+  isolation: isolate;
+}
+
+.hero--neo::before {
+  /* Big soft "neo" blobs that drift slowly. */
+  content: '';
+  position: absolute;
+  inset: -18% -12%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(520px 380px at 22% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(620px 420px at 76% 56%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(520px 360px at 62% 20%, rgba(0, 0, 0, 0.055), rgba(0, 0, 0, 0) 72%);
+  filter: blur(18px);
+  opacity: 0.95;
+  transform: translate3d(0, 0, 0);
+  animation: heroNeoDrift 16s ease-in-out infinite alternate;
+}
+
+.hero--neo::after {
+  /* Giant embossed type for impact (very subtle). */
+  content: 'OQ';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -56%);
+  font-size: min(44vw, 520px);
+  font-weight: 600;
+  letter-spacing: -0.08em;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.03);
+  text-shadow:
+    18px 18px 40px rgba(0, 0, 0, 0.06),
+    -18px -18px 44px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+@keyframes heroNeoDrift {
+  0% { transform: translate3d(-1.4%, -1.2%, 0) scale(1.02); }
+  100% { transform: translate3d(1.6%, 1.8%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero--neo::before {
+    animation: none;
+  }
+}
+
+.hero--neo .hero-dots {
+  display: none !important;
+}
+
+.hero--neo .hero-grid,
+.hero--neo .hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero--neo .hero-copy {
+  max-width: 64ch;
+  padding: 34px 34px 30px;
+  border-radius: 28px;
+  background: rgba(242, 243, 246, 0.86);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    20px 20px 48px rgba(0, 0, 0, 0.12),
+    -20px -20px 52px rgba(255, 255, 255, 0.92),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.hero--neo .eyebrow {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.hero--neo h1 {
+  color: rgba(0, 0, 0, 0.92);
+  letter-spacing: -0.02em;
+}
+
+.hero--neo .hero-sub {
+  color: rgba(0, 0, 0, 0.62);
+}
+
+.hero--neo .hero-dot {
+  animation: none;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.hero--neo .hero-actions {
+  margin-top: 28px;
+  gap: 12px;
+}
+
+.hero--neo .btn {
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow:
+    14px 14px 30px rgba(0, 0, 0, 0.12),
+    -14px -14px 34px rgba(255, 255, 255, 0.92);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+}
+
+.hero--neo .btn:hover,
+.hero--neo .btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow:
+    18px 18px 40px rgba(0, 0, 0, 0.14),
+    -18px -18px 44px rgba(255, 255, 255, 0.94);
+}
+
+.hero--neo .btn.primary {
+  background: #0f0f0f;
+  color: rgba(245, 245, 245, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.hero--neo .btn.primary:hover,
+.hero--neo .btn.primary:focus-visible {
+  background: #111111;
+  color: rgba(245, 245, 245, 0.98);
+}
+
+.hero--neo .btn.secondary {
+  background: rgba(242, 243, 246, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.hero--neo .btn:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.6);
+  outline-offset: 4px;
+}
+
+@media (max-width: 720px) {
+  .hero--neo::after {
+    font-size: 64vw;
+    transform: translate(-50%, -54%);
+  }
+
+  .hero--neo .hero-copy {
+    width: 100%;
+    max-width: none;
+    padding: 24px 18px 20px;
+    border-radius: 22px;
+  }
+
+  .hero--neo .hero-actions {
+    width: 100%;
+  }
+
+  .hero--neo .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero--recruiter .hero-copy {
+    width: 100%;
+    max-width: none;
+    padding: 22px 18px 20px;
+    border-radius: 22px;
+  }
 }
 
 .hero--tangent-bg .hero-copy {
@@ -2379,6 +3065,9 @@ body.modal-open {
 
 
 /* -- 2. Card Micro-interactions -- */
+.case-card,
+.stack-card,
+.contact-card,
 .case-card,
 .stack-card,
 .contact-card,
