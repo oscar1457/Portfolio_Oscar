@@ -605,6 +605,12 @@ body.show-quantum-scroll .quantum-scroll {
     cursor: none;
   }
 
+  .hero--tangent-bg a,
+  .hero--tangent-bg button,
+  .hero--tangent-bg .btn {
+    cursor: none !important;
+  }
+
   .hero--tangent-bg .hero-cursor {
     display: block;
     position: absolute;
