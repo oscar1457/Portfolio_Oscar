@@ -1090,9 +1090,26 @@ const heroCursor = document.querySelector('[data-hero-cursor]');
 if (hero) {
   const params = new URLSearchParams(window.location.search);
   const bg = params.get('bg');
-  if (bg === 'canva') {
-    hero.classList.add('hero--bg-canva');
+  const savedBg = localStorage.getItem('heroBg');
+  const applyBg = (value) => {
+    hero.classList.toggle('hero--bg-canva', value === 'canva');
+  };
+
+  if (bg === 'canva' || bg === 'poster') {
+    // Allow quick preview via URL param, but also persist it so you don't need the param next time.
+    localStorage.setItem('heroBg', bg);
   }
+
+  applyBg(localStorage.getItem('heroBg') || savedBg);
+
+  // Hidden power-user toggle: Ctrl+Shift+B switches between poster and Canva preview (persisted).
+  document.addEventListener('keydown', (event) => {
+    if (!(event.ctrlKey && event.shiftKey)) return;
+    if ((event.key || '').toLowerCase() !== 'b') return;
+    const next = hero.classList.contains('hero--bg-canva') ? 'poster' : 'canva';
+    localStorage.setItem('heroBg', next);
+    applyBg(next);
+  });
 }
 
 // Home background (Hero): halftone canvas animation (black/white), optimized for mobile.
