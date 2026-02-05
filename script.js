@@ -1084,50 +1084,12 @@ if (nav) {
 
 const hero = document.querySelector('.hero');
 const dotsCanvas = document.querySelector('.hero-dots');
-const heroScanline = document.querySelector('[data-hero-scanline]');
 
 // Home background (Hero): halftone canvas animation (black/white), optimized for mobile.
 // Replaces the previous chromatic dot-field to avoid flicker and reduce input jank.
 // Note: only enabled when explicitly requested via class to avoid running hidden canvases.
 if (hero && dotsCanvas && hero.classList.contains('hero--halftone')) {
   initHeroHalftoneBackground(hero, dotsCanvas);
-}
-
-// Home scroll effect: a horizontal scanline that moves down through the hero section.
-if (hero && heroScanline) {
-  initHeroScrollScanline(hero, heroScanline);
-}
-
-function initHeroScrollScanline(heroEl, lineEl) {
-  const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) return;
-
-  let rafId = null;
-  let lastY = -1;
-
-  const update = () => {
-    rafId = null;
-    const rect = heroEl.getBoundingClientRect();
-    const visible = rect.bottom > 0 && rect.top < window.innerHeight;
-    lineEl.style.opacity = visible ? '1' : '0';
-    if (!visible) return;
-
-    const y = clamp(-rect.top, 0, rect.height);
-    const rounded = Math.round(y);
-    if (rounded === lastY) return;
-    lastY = rounded;
-    lineEl.style.transform = `translate3d(0, ${rounded}px, 0)`;
-  };
-
-  const schedule = () => {
-    if (rafId) return;
-    rafId = requestAnimationFrame(update);
-  };
-
-  update();
-  window.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', schedule);
 }
 
 function initHeroHalftoneBackground(heroEl, canvas) {
