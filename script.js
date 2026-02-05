@@ -1084,12 +1084,57 @@ if (nav) {
 
 const hero = document.querySelector('.hero');
 const dotsCanvas = document.querySelector('.hero-dots');
+const heroCursor = document.querySelector('[data-hero-cursor]');
 
 // Home background (Hero): halftone canvas animation (black/white), optimized for mobile.
 // Replaces the previous chromatic dot-field to avoid flicker and reduce input jank.
 // Note: only enabled when explicitly requested via class to avoid running hidden canvases.
 if (hero && dotsCanvas && hero.classList.contains('hero--halftone')) {
   initHeroHalftoneBackground(hero, dotsCanvas);
+}
+
+// Home: custom cursor only inside the hero (desktop/fine pointer).
+if (hero && heroCursor) {
+  initHeroCursor(hero, heroCursor);
+}
+
+function initHeroCursor(heroEl, cursorEl) {
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!finePointer) return;
+
+  let rafId = null;
+  let cx = -120;
+  let cy = -120;
+  let visible = false;
+
+  const apply = () => {
+    rafId = null;
+    cursorEl.style.setProperty('--cx', `${cx}px`);
+    cursorEl.style.setProperty('--cy', `${cy}px`);
+  };
+
+  const schedule = () => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(apply);
+  };
+
+  heroEl.addEventListener('mouseenter', () => {
+    visible = true;
+    cursorEl.style.opacity = '1';
+  });
+
+  heroEl.addEventListener('mouseleave', () => {
+    visible = false;
+    cursorEl.style.opacity = '0';
+  });
+
+  heroEl.addEventListener('mousemove', (event) => {
+    if (!visible) return;
+    const rect = heroEl.getBoundingClientRect();
+    cx = event.clientX - rect.left;
+    cy = event.clientY - rect.top;
+    schedule();
+  }, { passive: true });
 }
 
 function initHeroHalftoneBackground(heroEl, canvas) {
