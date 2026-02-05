@@ -733,6 +733,25 @@ body.show-quantum-scroll .quantum-scroll {
   transition: opacity 300ms ease-out;
 }
 
+.hero-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: rgba(245, 245, 245, 0.82);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+}
+
+.hero--tangent-bg .hero-scanline {
+  background: rgba(245, 245, 245, 0.9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 10px 18px rgba(0, 0, 0, 0.14);
+}
+
 .hero.is-frozen .hero-dots {
   opacity: 0.1;
 }
